@@ -45,9 +45,10 @@ class AuthorizationController extends Controller
         $this->validate($request, [
             'name' => 'required',
             'password' => 'required',
+            'type' => 'required'
         ]);
 
-        $credentials = request(['name', 'password']);
+        $credentials = request(['name', 'password', 'type']);
         if (! $token = auth()->attempt($credentials)) {
             Response::errorUnauthorized();
         }

@@ -42,6 +42,7 @@ class WechatAccountServiceImpl implements AccountService
                 abort(ResponseCodeEnum::SERVICE_LOGIN_ERROR);
             }
         }
+        return $user;
     }
 
     /**
@@ -51,10 +52,10 @@ class WechatAccountServiceImpl implements AccountService
      */
     private function login(array $credentials): ?User
     {
-        if (!isset($credentials["accountName"], $credentials["appType"])) {
+        if (!isset($credentials["name"], $credentials["type"])) {
             abort(ResponseCodeEnum::CLIENT_PARAMETER_ERROR);
         }
-        $account = $this->accountRepository->getByOpenId($credentials["accountName"]);
+        $account = $this->accountRepository->getByOpenId($credentials["name"]);
         if (is_null($account)) {
             return null;
         }
@@ -69,15 +70,15 @@ class WechatAccountServiceImpl implements AccountService
      */
     private function register(array $credentials)
     {
-        if (!isset($credentials["accountName"], $credentials["appType"])) {
+        if (!isset($credentials["name"], $credentials["type"])) {
             abort(ResponseCodeEnum::CLIENT_PARAMETER_ERROR);
         }
 
         try {
-            $wechatUser = $this->officialAccountApp->user->get($credentials["accountName"]);
+            $wechatUser = $this->officialAccountApp->user->get($credentials["name"]);
         } catch (\Exception $e) {
-            Log::error("微信用户数据查询失败", $e->getTrace());
-            abort(ResponseCodeEnum::CLIENT_DELETED_ERROR, "微信用户数据查询失败");
+            Log::error("调用微信用户信息接口失败，错误信息：{$e->getMessage()}");
+            abort(ResponseCodeEnum::SERVICE_LOGIN_ERROR);
         }
 
         if (isset($wechatUser["unionid"])) {
@@ -88,7 +89,7 @@ class WechatAccountServiceImpl implements AccountService
                     "openId" => $wechatUser["openid"],
                     "unionId" => $wechatUser["unionid"],
                     "appId" => $this->officialAccountApp->config->get("app_id"),
-                    "appType" => "officialAccount"
+                    "type" => "officialAccount"
                 ];
                 try {
                     $this->accountRepository->insertAccount($attr, "system");
@@ -112,7 +113,7 @@ class WechatAccountServiceImpl implements AccountService
             "openId" => $wechatUser["openid"],
             "unionId" => $wechatUser["unionid"],
             "appId" => $this->officialAccountApp->config->get("app_id"),
-            "appType" => "officialAccount"
+            "type" => "officialAccount"
         ];
         $account = $this->accountRepository->insertAccount($accountAttr, "system");
         DB::commit();
