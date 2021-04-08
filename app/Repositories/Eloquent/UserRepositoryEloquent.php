@@ -13,9 +13,11 @@ namespace App\Repositories\Eloquent;
 
 use App\Contracts\Repositories\UserRepository;
 use App\Repositories\Criteria\RequestCriteria;
+use App\Repositories\Enums\ResponseCodeEnum;
 use App\Repositories\Models\User;
 use App\Repositories\Validators\UserValidator;
-use Illuminate\Support\Facades\Hash;
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Log;
 
 /**
  * Class UserRepositoryEloquent.
@@ -57,12 +59,30 @@ class UserRepositoryEloquent extends BaseRepository implements UserRepository
         $this->pushCriteria(app(RequestCriteria::class));
     }
 
-    public function insertUser($attributes)
+    /**
+     * 新建用户数据
+     * @param array $attr
+     * @param string $operator
+     * @return Model
+     * @throws \Throwable
+     */
+    public function insertUser(array $attr, string $operator): Model
     {
-        $this->model->name = $attributes['name'];
-        $this->model->email = $attributes['email'];
-        $this->model->password = Hash::make($attributes['password']);
-        $this->model->saveOrFail();
+        $this->model->nickname = $attr["nickname"];
+        $this->model->gender = $attr["gender"];
+        $this->model->avatar_url = $attr["avatarUrl"];
+        $this->model->register_time = date("Y-m-d H:i:s");
+        $this->model->created_by = $operator;
+        $this->model->gmt_created = date("Y-m-d H:i:s");
+        $this->model->modified_by = $operator;
+        $this->model->gmt_modified = date("Y-m-d H:i:s");
+
+        try {
+            $this->model->saveOrFail();
+        } catch (\Exception $e) {
+            Log::error("创建用户失败", $e->getTrace());
+            abort(ResponseCodeEnum::SYSTEM_ERROR, "创建用户失败");
+        }
 
         return $this->model;
     }

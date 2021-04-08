@@ -22,5 +22,6 @@ class RepositoryServiceProvider extends LumenRepositoryServiceProvider
     {
         $this->app->bind(\App\Contracts\Repositories\UserRepository::class, \App\Repositories\Eloquent\UserRepositoryEloquent::class);
         $this->app->bind(\App\Contracts\Repositories\PostRepository::class, \App\Repositories\Eloquent\PostRepositoryEloquent::class);
+        $this->app->bind(\App\Contracts\Repositories\WechatAccountRepository::class, \App\Repositories\Eloquent\WechatAccountRepositoryEloquent::class);
     }
 }
