@@ -12,10 +12,10 @@
 namespace App\Providers;
 
 use App\Repositories\Enums\CacheEnum;
+use App\Services\Contract\AccountService;
 use Illuminate\Auth\EloquentUserProvider as BaseEloquentUserProvider;
-use Illuminate\Contracts\Support\Arrayable;
+use Illuminate\Contracts\Auth\Authenticatable as UserContract;
 use Illuminate\Support\Facades\Cache;
-use Illuminate\Support\Str;
 
 class EloquentUserProvider extends BaseEloquentUserProvider
 {
@@ -40,36 +40,23 @@ class EloquentUserProvider extends BaseEloquentUserProvider
     }
 
     /**
-     * Retrieve a user by the given credentials.
-     *
-     * @param  array  $credentials
-     * @return \Illuminate\Contracts\Auth\Authenticatable|null
+     * 登陆验证
+     * @param array $credentials
+     * @return \App\Repositories\Models\User|UserContract|null
      */
     public function retrieveByCredentials(array $credentials)
     {
-        if (empty($credentials) ||
-            (count($credentials) === 1 &&
-                Str::contains($this->firstCredentialKey($credentials), 'password'))) {
-            return;
-        }
+        return app(AccountService::class)->loginOrRegister($credentials);
+    }
 
-        // First we will add each credential element to the query as a where clause.
-        // Then we can execute the query and, if we found a user, return it in a
-        // Eloquent User "model" that will be utilized by the Guard instances.
-        $query = $this->newModelQuery();
-
-        foreach ($credentials as $key => $value) {
-            if (Str::contains($key, 'password')) {
-                continue;
-            }
-
-            if (is_array($value) || $value instanceof Arrayable) {
-                $query->whereIn($key, $value);
-            } else {
-                $query->where($key, $value);
-            }
-        }
-
-        return $query->first();
+    /**
+     * 验证密码 - 默认为true
+     * @param UserContract $user
+     * @param array $credentials
+     * @return bool
+     */
+    public function validateCredentials(UserContract $user, array $credentials)
+    {
+        return true;
     }
 }
