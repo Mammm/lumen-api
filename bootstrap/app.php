@@ -103,15 +103,18 @@ $app->alias('cache', \Illuminate\Cache\CacheManager::class);
 // ]);
 
 $app->middleware([
-    \Jiannei\Logger\Laravel\Http\Middleware\RequestLog::class,
+//  注释请求事件（日志相关）
+//  \Jiannei\Logger\Laravel\Http\Middleware\RequestLog::class,
     \Jiannei\Response\Laravel\Http\Middleware\Etag::class,
 ]);
 
 $app->routeMiddleware([
+//  用不上权限，先隐藏了
+//  'permission' => \Spatie\Permission\Middlewares\PermissionMiddleware::class,
+//  'role' => \Spatie\Permission\Middlewares\RoleMiddleware::class,
+
     'auth' => App\Http\Middleware\Authenticate::class,
     'enum' => \Jiannei\Enum\Laravel\Http\Middleware\TransformEnums::class,
-    'permission' => \Spatie\Permission\Middlewares\PermissionMiddleware::class,
-    'role' => \Spatie\Permission\Middlewares\RoleMiddleware::class,
     'throttle' => \Jiannei\Response\Laravel\Http\Middleware\ThrottleRequests::class,
 ]);
 
@@ -136,18 +139,22 @@ $app->register(App\Providers\EventServiceProvider::class);
 /*
  * Package Service Providers...
  */
+//权限代码注释
+//$app->register(\Spatie\Permission\PermissionServiceProvider::class);
+//mongodb日志代码注释
+//$app->register(\Jiannei\Logger\Laravel\Providers\ServiceProvider::class);
+
 $app->register(\Tymon\JWTAuth\Providers\LumenServiceProvider::class);
 $app->register(\Illuminate\Redis\RedisServiceProvider::class);
-$app->register(\Spatie\Permission\PermissionServiceProvider::class);
 $app->register(\Jiannei\Enum\Laravel\Providers\LumenServiceProvider::class);
 $app->register(\Jiannei\Response\Laravel\Providers\LumenServiceProvider::class);
-$app->register(\Jiannei\Logger\Laravel\Providers\ServiceProvider::class);
 
 /*
  * Custom Service Providers.
  */
+$app->register(\Overtrue\LaravelWeChat\ServiceProvider::class);
 $app->register(App\Providers\RepositoryServiceProvider::class);
-
+$app->register(\App\Providers\AccountServiceProvider::class);
 /*
 |--------------------------------------------------------------------------
 | Load The Application Routes
