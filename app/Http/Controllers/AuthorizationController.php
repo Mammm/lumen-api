@@ -43,12 +43,11 @@ class AuthorizationController extends Controller
     public function store(Request $request)
     {
         $this->validate($request, [
-            'email' => 'filled|email',
-            'name' => 'required_without:email',
+            'name' => 'required',
             'password' => 'required',
         ]);
 
-        $credentials = request(['name', 'email', 'password']);
+        $credentials = request(['name', 'password']);
         if (! $token = auth()->attempt($credentials)) {
             Response::errorUnauthorized();
         }
