@@ -5,8 +5,7 @@ namespace App\Repositories\Eloquent;
 use Prettus\Repository\Eloquent\BaseRepository;
 use Prettus\Repository\Criteria\RequestCriteria;
 use App\Contracts\Repositories\MedalStockRepository;
-use App\Repositories\Models\MedalStock;
-use App\Repositories\Validators\MedalStockValidator;
+use App\Repositories\Models\StockMedal;
 
 /**
  * Class MedalStockRepositoryEloquent.
@@ -22,10 +21,10 @@ class MedalStockRepositoryEloquent extends BaseRepository implements MedalStockR
      */
     public function model()
     {
-        return MedalStock::class;
+        return StockMedal::class;
     }
 
-    
+
 
     /**
      * Boot up the repository, pushing criteria
@@ -34,5 +33,5 @@ class MedalStockRepositoryEloquent extends BaseRepository implements MedalStockR
     {
         $this->pushCriteria(app(RequestCriteria::class));
     }
-    
+
 }

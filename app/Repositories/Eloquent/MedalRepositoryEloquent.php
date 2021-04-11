@@ -6,7 +6,6 @@ use Prettus\Repository\Eloquent\BaseRepository;
 use Prettus\Repository\Criteria\RequestCriteria;
 use App\Contracts\Repositories\MedalRepository;
 use App\Repositories\Models\Medal;
-use App\Repositories\Validators\MedalValidator;
 
 /**
  * Class MedalRepositoryEloquent.
@@ -25,7 +24,7 @@ class MedalRepositoryEloquent extends BaseRepository implements MedalRepository
         return Medal::class;
     }
 
-    
+
 
     /**
      * Boot up the repository, pushing criteria
@@ -34,5 +33,5 @@ class MedalRepositoryEloquent extends BaseRepository implements MedalRepository
     {
         $this->pushCriteria(app(RequestCriteria::class));
     }
-    
+
 }

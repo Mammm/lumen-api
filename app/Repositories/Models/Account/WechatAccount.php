@@ -11,6 +11,8 @@ class WechatAccount extends Model implements Transformable
 {
     use TransformableTrait;
 
+    protected $table = "wechat_account";
+    
     protected $guarded = [];
 
     protected $hidden = [

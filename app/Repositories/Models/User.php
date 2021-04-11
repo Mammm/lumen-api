@@ -11,36 +11,19 @@
 
 namespace App\Repositories\Models;
 
-use App\Repositories\Enums\RoleEnum;
 use Database\Factories\UserFactory;
 use Illuminate\Auth\Authenticatable;
 use Illuminate\Contracts\Auth\Authenticatable as AuthenticatableContract;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Laravel\Lumen\Auth\Authorizable;
-use Spatie\Permission\Traits\HasRoles;
 use Tymon\JWTAuth\Contracts\JWTSubject;
 
 class User extends Model implements AuthenticatableContract, JWTSubject
 {
-    use Authenticatable, Authorizable, HasFactory, HasRoles;
+    use Authenticatable, HasFactory;
 
-    /**
-     * The attributes that are mass assignable.
-     *
-     * @var array
-     */
-    protected $fillable = [
-        'name', 'email',
-    ];
+    protected $table = "user";
 
-    /**
-     * The attributes excluded from the model's JSON form.
-     *
-     * @var array
-     */
-    protected $hidden = [
-        'password',
-    ];
+    protected $guarded = [];
 
     /**
      * 兼容 Laravel 8 的 Factory.
@@ -53,8 +36,7 @@ class User extends Model implements AuthenticatableContract, JWTSubject
     }
 
     /**
-     * Get the identifier that will be stored in the subject claim of the JWT.
-     *
+     * JWT - 返回数据唯一标识符
      * @return mixed
      */
     public function getJWTIdentifier()
@@ -63,26 +45,11 @@ class User extends Model implements AuthenticatableContract, JWTSubject
     }
 
     /**
-     * Return a key value array, containing any custom claims to be added to the JWT.
-     *
+     * JWT - token中自定义的信息字段
      * @return array
      */
     public function getJWTCustomClaims()
     {
         return [];
-    }
-
-    public function isSuperAdmin()
-    {
-        return $this->hasRole(RoleEnum::SUPER_ADMIN()->name);
-    }
-
-    public function isOwnerOf(\Illuminate\Database\Eloquent\Model $model, string $key = 'user_id'): bool
-    {
-        if ($model instanceof User) {
-            return $this->id === $model->id;
-        }
-
-        return $this->id === $model->$key;
     }
 }

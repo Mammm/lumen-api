@@ -7,15 +7,15 @@ use Prettus\Repository\Contracts\Transformable;
 use Prettus\Repository\Traits\TransformableTrait;
 
 /**
- * Class MedalStock.
+ * Class DailyShareLog.
  *
  * @package namespace App\Repositories\Models;
  */
-class MedalStock extends Model implements Transformable
+class ShareHistory extends Model implements Transformable
 {
     use TransformableTrait;
 
-    protected $table = "medal_stock";
+    protected $table = "share_history";
 
     protected $guarded = [];
 }

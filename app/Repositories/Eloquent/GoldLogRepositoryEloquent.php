@@ -5,8 +5,7 @@ namespace App\Repositories\Eloquent;
 use Prettus\Repository\Eloquent\BaseRepository;
 use Prettus\Repository\Criteria\RequestCriteria;
 use App\Contracts\Repositories\GoldLogRepository;
-use App\Repositories\Models\GoldLog;
-use App\Repositories\Validators\GoldLogValidator;
+use App\Repositories\Models\GoldHistory;
 
 /**
  * Class GoldLogRepositoryEloquent.
@@ -22,10 +21,10 @@ class GoldLogRepositoryEloquent extends BaseRepository implements GoldLogReposit
      */
     public function model()
     {
-        return GoldLog::class;
+        return GoldHistory::class;
     }
 
-    
+
 
     /**
      * Boot up the repository, pushing criteria
@@ -34,5 +33,5 @@ class GoldLogRepositoryEloquent extends BaseRepository implements GoldLogReposit
     {
         $this->pushCriteria(app(RequestCriteria::class));
     }
-    
+
 }

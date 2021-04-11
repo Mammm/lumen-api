@@ -5,8 +5,7 @@ namespace App\Repositories\Eloquent;
 use Prettus\Repository\Eloquent\BaseRepository;
 use Prettus\Repository\Criteria\RequestCriteria;
 use App\Contracts\Repositories\PrizeStockRepository;
-use App\Repositories\Models\PrizeStock;
-use App\Repositories\Validators\PrizeStockValidator;
+use App\Repositories\Models\StockPrize;
 
 /**
  * Class PrizeStockRepositoryEloquent.
@@ -22,10 +21,10 @@ class PrizeStockRepositoryEloquent extends BaseRepository implements PrizeStockR
      */
     public function model()
     {
-        return PrizeStock::class;
+        return StockPrize::class;
     }
 
-    
+
 
     /**
      * Boot up the repository, pushing criteria
@@ -34,5 +33,5 @@ class PrizeStockRepositoryEloquent extends BaseRepository implements PrizeStockR
     {
         $this->pushCriteria(app(RequestCriteria::class));
     }
-    
+
 }

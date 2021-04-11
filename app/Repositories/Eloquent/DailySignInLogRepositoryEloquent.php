@@ -5,8 +5,7 @@ namespace App\Repositories\Eloquent;
 use Prettus\Repository\Eloquent\BaseRepository;
 use Prettus\Repository\Criteria\RequestCriteria;
 use App\Contracts\Repositories\DailySignInLogRepository;
-use App\Repositories\Models\DailySignInLog;
-use App\Repositories\Validators\DailySignInLogValidator;
+use App\Repositories\Models\CheckHistory;
 
 /**
  * Class DailySignInLogRepositoryEloquent.
@@ -22,10 +21,10 @@ class DailySignInLogRepositoryEloquent extends BaseRepository implements DailySi
      */
     public function model()
     {
-        return DailySignInLog::class;
+        return CheckHistory::class;
     }
 
-    
+
 
     /**
      * Boot up the repository, pushing criteria
@@ -34,5 +33,5 @@ class DailySignInLogRepositoryEloquent extends BaseRepository implements DailySi
     {
         $this->pushCriteria(app(RequestCriteria::class));
     }
-    
+
 }

@@ -5,8 +5,7 @@ namespace App\Repositories\Eloquent;
 use Prettus\Repository\Eloquent\BaseRepository;
 use Prettus\Repository\Criteria\RequestCriteria;
 use App\Contracts\Repositories\DailyShareLogRepository;
-use App\Repositories\Models\DailyShareLog;
-use App\Repositories\Validators\DailyShareLogValidator;
+use App\Repositories\Models\ShareHistory;
 
 /**
  * Class DailyShareLogRepositoryEloquent.
@@ -22,10 +21,10 @@ class DailyShareLogRepositoryEloquent extends BaseRepository implements DailySha
      */
     public function model()
     {
-        return DailyShareLog::class;
+        return ShareHistory::class;
     }
 
-    
+
 
     /**
      * Boot up the repository, pushing criteria
@@ -34,5 +33,5 @@ class DailyShareLogRepositoryEloquent extends BaseRepository implements DailySha
     {
         $this->pushCriteria(app(RequestCriteria::class));
     }
-    
+
 }

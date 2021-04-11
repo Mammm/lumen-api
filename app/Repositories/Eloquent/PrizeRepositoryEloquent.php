@@ -6,7 +6,6 @@ use Prettus\Repository\Eloquent\BaseRepository;
 use Prettus\Repository\Criteria\RequestCriteria;
 use App\Contracts\Repositories\PrizeRepository;
 use App\Repositories\Models\Prize;
-use App\Repositories\Validators\PrizeValidator;
 
 /**
  * Class PrizeRepositoryEloquent.
@@ -25,7 +24,7 @@ class PrizeRepositoryEloquent extends BaseRepository implements PrizeRepository
         return Prize::class;
     }
 
-    
+
 
     /**
      * Boot up the repository, pushing criteria
@@ -34,5 +33,5 @@ class PrizeRepositoryEloquent extends BaseRepository implements PrizeRepository
     {
         $this->pushCriteria(app(RequestCriteria::class));
     }
-    
+
 }

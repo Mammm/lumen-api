@@ -24,11 +24,6 @@ use Illuminate\Support\Facades\Log;
  */
 class UserRepositoryEloquent extends BaseRepository implements UserRepository
 {
-    protected $fieldSearchable = [
-        'name' => 'like',
-        'email', // Default Condition "="
-    ];
-
     /**
      * Specify Model class name.
      *
