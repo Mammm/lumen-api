@@ -43,31 +43,6 @@ class ExampleController extends Controller
 
     public function logs()
     {
-        return Response::success(Log::all());
-    }
-
-    public function syncRoles(Request $request)
-    {
-        $this->validate($request, [
-            'roles' => 'required|array',
-        ]);
-
-        $roles = $request->input('roles');
-
-        $request->user()->syncRoles($roles);
-
-        return Response::success($roles, '角色更新成功');
-    }
-
-    public function syncPermissions(Request $request)
-    {
-        $this->validate($request, [
-            'permissions' => 'required|array',
-        ]);
-
-        $permissions = $request->input('permissions');
-        $request->user()->syncPermissions($permissions);
-
-        return Response::success($permissions, '权限更新成功');
+        return [];
     }
 }

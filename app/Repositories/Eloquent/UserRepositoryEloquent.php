@@ -16,65 +16,66 @@ use App\Repositories\Criteria\RequestCriteria;
 use App\Repositories\Enums\ResponseCodeEnum;
 use App\Repositories\Models\User;
 use App\Repositories\Validators\UserValidator;
+use App\Support\Constant;
+use Exception;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Log;
+use Throwable;
 
-/**
- * Class UserRepositoryEloquent.
- */
 class UserRepositoryEloquent extends BaseRepository implements UserRepository
 {
-    /**
-     * Specify Model class name.
-     *
-     * @return string
-     */
     public function model()
     {
         return User::class;
     }
 
-    /**
-     * Specify Validator class name.
-     *
-     * @return mixed
-     */
     public function validator()
     {
         return UserValidator::class;
     }
 
-    /**
-     * Boot up the repository, pushing criteria.
-     *
-     * @throws \Prettus\Repository\Exceptions\RepositoryException
-     */
     public function boot()
     {
         $this->pushCriteria(app(RequestCriteria::class));
     }
 
     /**
+     * 手机号查找用户
+     * @param string $telephoneNumber
+     * @return Model|null
+     */
+    public function getByTelephoneNumber(string $telephoneNumber): ?User
+    {
+        return $this->model->newQuery()->where("mobile_phone", $telephoneNumber)->first();
+    }
+
+    /**
      * 新建用户数据
      * @param array $attr
      * @param string $operator
-     * @return Model
-     * @throws \Throwable
+     * @return User
+     * @throws Throwable
      */
-    public function insertUser(array $attr, string $operator): Model
+    public function insertUser(array $attr, string $operator): User
     {
+        $now = date("Y-m-d H:i:s");
+
+        $this->model->out_id = $attr["out_id"];
         $this->model->nickname = $attr["nickname"];
         $this->model->gender = $attr["gender"];
-        $this->model->avatar_url = $attr["avatarUrl"];
-        $this->model->register_time = date("Y-m-d H:i:s");
-        $this->model->created_by = $operator;
-        $this->model->gmt_created = date("Y-m-d H:i:s");
-        $this->model->modified_by = $operator;
-        $this->model->gmt_modified = date("Y-m-d H:i:s");
+        $this->model->avatar_url = $attr["avatar_url"];
+        $this->model->register_time = $now;
+        $this->model->mobile_phone = $attr["mobile_phone"];
+        $this->model->freeze = 0;
+        $this->model->referrer = $attr["referrer"];
+        $this->model->gold = 0;
+        $this->model->version = 1;
+        $this->model->gmt_created = $now;
+        $this->model->gmt_modified = $now;
 
         try {
             $this->model->saveOrFail();
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             Log::error("创建用户失败", $e->getTrace());
             abort(ResponseCodeEnum::SYSTEM_ERROR, "创建用户失败");
         }

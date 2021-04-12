@@ -12,58 +12,91 @@
 namespace App\Services;
 
 use App\Contracts\Repositories\UserRepository;
-use App\Repositories\Criteria\UserCriteria;
-use App\Repositories\Eloquent\UserRepositoryEloquent;
+use App\Contracts\Repositories\WechatAccountRepository;
+use App\Repositories\Enums\ResponseCodeEnum;
 use App\Repositories\Presenters\UserPresenter;
+use App\Support\Constant;
+use EasyWeChat\OfficialAccount\Application;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
 
 class UserService
 {
-    private $repository;
+    private Application $officialAccountApp;
+    private UserRepository $userRepository;
+    private WechatAccountRepository $wechatAccountRepository;
 
-    /**
-     * UserService constructor.
-     *
-     * @param  UserRepositoryEloquent  $repository
-     */
-    public function __construct(UserRepository $repository)
+    public function __construct(Application $officialAccountApp,
+                                UserRepository $userRepository,
+                                WechatAccountRepository $wechatAccountRepository)
     {
-        $this->repository = $repository;
-    }
-
-    public function handleSearchList(Request $request)
-    {
-        $this->repository->pushCriteria(new UserCriteria($request));
-        $this->repository->setPresenter(UserPresenter::class);
-
-        return $this->repository->paginate($request->get('limit'));
-    }
-
-    public function handleSearchSimpleList(Request $request)
-    {
-        $this->repository->pushCriteria(new UserCriteria($request));
-        $this->repository->setPresenter(UserPresenter::class);
-
-        return $this->repository->simplePaginate($request->get('limit'));
-    }
-
-    public function handleSearchCursorList(Request $request)
-    {
-        $this->repository->pushCriteria(new UserCriteria($request));
-        $this->repository->setPresenter(UserPresenter::class);
-
-        return $this->repository->cursorPaginate($request->get('limit'));
+        $this->officialAccountApp = $officialAccountApp;
+        $this->userRepository = $userRepository;
+        $this->wechatAccountRepository = $wechatAccountRepository;
     }
 
     public function handleSearchItem($id)
     {
-        $this->repository->setPresenter(UserPresenter::class);
-
-        return $this->repository->find($id);
+        $this->userRepository->setPresenter(UserPresenter::class);
+        return $this->userRepository->find($id);
     }
 
-    public function handleCreateItem(Request $request)
+    public function register(Request $request): void
     {
-        return $this->repository->insertUser($request->all());
+        //获取微信用户信息
+        $wechatUser = null;
+        try {
+            $wechatUser = $this->officialAccountApp->user->get($request->input("openid"));
+        } catch (\Exception $e) {
+            abort(ResponseCodeEnum::SERVICE_REGISTER_ERROR, "获取用户信息失败");
+        }
+
+        //用户数据处理
+        $user = $this->userRepository->getByTelephoneNumber($request->input("phone"));
+        if (!is_null($user)) {
+            $outUser = [];// TODO:查找甲方系统中用户的数据
+            if (is_null($outUser)) {
+                try {
+                    $outUser = []; //TODO:甲方系统中没有用户数据，注册
+                } catch (\Exception $e) {
+                    Log::error("远端服务器调用注册接口失败,错误信息{$e->getMessage()}", $e->getTrace());
+                    abort(ResponseCodeEnum::SERVICE_REGISTER_ERROR, "注册超时，请稍后重试");
+                }
+            }
+            $userAttr = [
+                "out_id" => $outUser["id"],
+                "nickname" => $wechatUser["nickname"],
+                "gender" => $wechatUser["sex"],
+                "avatar_url" => $wechatUser["headimgurl"],
+                "mobile_phone" => $outUser["mobile_phone"],
+                "referrer" => $request->input("inviteBy", 0)
+            ];
+            $user = $this->userRepository->insertUser($userAttr, Constant::OPERATOR);
+        }
+
+        //微信账号数据处理
+        $wechatAccount = $this->wechatAccountRepository->getByOpenId($request->input("openid"));
+        if (!is_null($wechatAccount)) {
+            if ($wechatAccount["user_id"] != $user["id"]) {
+                abort(ResponseCodeEnum::SERVICE_REGISTER_ERROR, "手机账号已被{$wechatAccount["nickname"]}绑定");
+            }
+            return;
+        }
+        $wechatAccountAttr = [
+            "user_id" => $user["id"],
+            "app_type" => "officialAccount",
+            "open_id" => $wechatUser["openid"],
+            "app_id" => $this->officialAccountApp->config->get("app_id"),
+            "union_id" => $wechatUser["unionid"] ?? "",
+            "nickname" => $wechatUser["nickname"],
+            "avatar_url" => $wechatUser["headimgurl"],
+            "gender" => $wechatUser["sex"],
+            "city" => $wechatUser["city"],
+            "province" => $wechatUser["province"],
+            "country" => $wechatUser["country"],
+            "subscribe_time" => $wechatUser["subscribe_time"],
+            "subscribe_scene" => $wechatUser["subscribe_scene"],
+        ];
+        $this->wechatAccountRepository->insertAccount($wechatAccountAttr, Constant::OPERATOR);
     }
 }

@@ -24,7 +24,6 @@ class WechatAccountTransformer extends TransformerAbstract
     }
 
     public function includeUser(WechatAccount $account) {
-        dd($account->user);
         return $this->item($account->user, new UserTransformer());
     }
 }

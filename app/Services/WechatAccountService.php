@@ -1,7 +1,7 @@
 <?php
 
 
-namespace App\Services\Impl;
+namespace App\Services;
 
 use App\Contracts\Repositories\UserRepository;
 use App\Contracts\Repositories\WechatAccountRepository;
@@ -14,7 +14,7 @@ use EasyWeChat\OfficialAccount\Application;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 
-class WechatAccountServiceImpl implements AccountService
+class WechatAccountService implements AccountService
 {
     private Application $officialAccountApp;
     private WechatAccountRepository $accountRepository;

@@ -15,6 +15,7 @@ use Database\Factories\UserFactory;
 use Illuminate\Auth\Authenticatable;
 use Illuminate\Contracts\Auth\Authenticatable as AuthenticatableContract;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Tymon\JWTAuth\Contracts\JWTSubject;
 
 class User extends Model implements AuthenticatableContract, JWTSubject
@@ -24,6 +25,36 @@ class User extends Model implements AuthenticatableContract, JWTSubject
     protected $table = "user";
 
     protected $guarded = [];
+
+    public function checkHistory(): HasMany
+    {
+        return $this->hasMany(CheckHistory::class, "user_id");
+    }
+
+    public function shareHistory(): HasMany
+    {
+        return $this->hasMany(ShareHistory::class, "user_id");
+    }
+
+    public function goldHistory(): HasMany
+    {
+        return $this->hasMany(GoldHistory::class, "user_id");
+    }
+
+    public function stockMedal(): HasMany
+    {
+        return $this->hasMany(StockMedal::class, "user_id");
+    }
+
+    public function stockMedalHistory(): HasMany
+    {
+        return $this->hasMany(StockMedalHistory::class, "user_id");
+    }
+
+    public function stockPrize(): HasMany
+    {
+        return $this->hasMany(StockPrize::class, "user_id");
+    }
 
     /**
      * 兼容 Laravel 8 的 Factory.
