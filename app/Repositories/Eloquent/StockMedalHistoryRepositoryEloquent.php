@@ -4,7 +4,7 @@ namespace App\Repositories\Eloquent;
 
 use Prettus\Repository\Eloquent\BaseRepository;
 use Prettus\Repository\Criteria\RequestCriteria;
-use App\Contracts\Repositories\MedalStockLogRepository;
+use App\Contracts\Repositories\StockMedalHistoryRepository;
 use App\Repositories\Models\StockMedalHistory;
 
 /**
@@ -12,7 +12,7 @@ use App\Repositories\Models\StockMedalHistory;
  *
  * @package namespace App\Repositories\Eloquent;
  */
-class MedalStockLogRepositoryEloquent extends BaseRepository implements MedalStockLogRepository
+class StockMedalHistoryRepositoryEloquent extends BaseRepository implements StockMedalHistoryRepository
 {
     /**
      * Specify Model class name

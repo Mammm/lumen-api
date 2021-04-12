@@ -4,15 +4,15 @@ namespace App\Repositories\Eloquent;
 
 use Prettus\Repository\Eloquent\BaseRepository;
 use Prettus\Repository\Criteria\RequestCriteria;
-use App\Contracts\Repositories\GoldLogRepository;
-use App\Repositories\Models\GoldHistory;
+use App\Contracts\Repositories\ShareHistoryRepository;
+use App\Repositories\Models\ShareHistory;
 
 /**
- * Class GoldLogRepositoryEloquent.
+ * Class DailyShareLogRepositoryEloquent.
  *
  * @package namespace App\Repositories\Eloquent;
  */
-class GoldLogRepositoryEloquent extends BaseRepository implements GoldLogRepository
+class ShareHistoryRepositoryEloquent extends BaseRepository implements ShareHistoryRepository
 {
     /**
      * Specify Model class name
@@ -21,7 +21,7 @@ class GoldLogRepositoryEloquent extends BaseRepository implements GoldLogReposit
      */
     public function model()
     {
-        return GoldHistory::class;
+        return ShareHistory::class;
     }
 
 

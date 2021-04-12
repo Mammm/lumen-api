@@ -32,7 +32,6 @@ Route::get('/', function () {
 // 测试路由
 Route::group(['prefix' => 'test'], function () {
     Route::get('configurations', 'ExampleController@configurations');
-    Route::get('logs', ['uses' => 'ExampleController@logs', 'middleware' => 'throttle:5,1']);
 });
 
 // 用户管理

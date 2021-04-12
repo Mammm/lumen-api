@@ -4,15 +4,15 @@ namespace App\Repositories\Eloquent;
 
 use Prettus\Repository\Eloquent\BaseRepository;
 use Prettus\Repository\Criteria\RequestCriteria;
-use App\Contracts\Repositories\PrizeStockRepository;
-use App\Repositories\Models\StockPrize;
+use App\Contracts\Repositories\GoldHistoryRepository;
+use App\Repositories\Models\GoldHistory;
 
 /**
- * Class PrizeStockRepositoryEloquent.
+ * Class GoldLogRepositoryEloquent.
  *
  * @package namespace App\Repositories\Eloquent;
  */
-class PrizeStockRepositoryEloquent extends BaseRepository implements PrizeStockRepository
+class GoldHistoryRepositoryEloquent extends BaseRepository implements GoldHistoryRepository
 {
     /**
      * Specify Model class name
@@ -21,7 +21,7 @@ class PrizeStockRepositoryEloquent extends BaseRepository implements PrizeStockR
      */
     public function model()
     {
-        return StockPrize::class;
+        return GoldHistory::class;
     }
 
 

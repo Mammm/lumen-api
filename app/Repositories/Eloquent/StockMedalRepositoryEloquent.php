@@ -4,15 +4,15 @@ namespace App\Repositories\Eloquent;
 
 use Prettus\Repository\Eloquent\BaseRepository;
 use Prettus\Repository\Criteria\RequestCriteria;
-use App\Contracts\Repositories\DailySignInLogRepository;
-use App\Repositories\Models\CheckHistory;
+use App\Contracts\Repositories\StockMedalRepository;
+use App\Repositories\Models\StockMedal;
 
 /**
- * Class DailySignInLogRepositoryEloquent.
+ * Class MedalStockRepositoryEloquent.
  *
  * @package namespace App\Repositories\Eloquent;
  */
-class DailySignInLogRepositoryEloquent extends BaseRepository implements DailySignInLogRepository
+class StockMedalRepositoryEloquent extends BaseRepository implements StockMedalRepository
 {
     /**
      * Specify Model class name
@@ -21,7 +21,7 @@ class DailySignInLogRepositoryEloquent extends BaseRepository implements DailySi
      */
     public function model()
     {
-        return CheckHistory::class;
+        return StockMedal::class;
     }
 
 

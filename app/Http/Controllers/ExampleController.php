@@ -11,7 +11,6 @@
 
 namespace App\Http\Controllers;
 
-use App\Repositories\Models\Log;
 use Illuminate\Http\Request;
 use Jiannei\Response\Laravel\Support\Facades\Response;
 
@@ -39,10 +38,5 @@ class ExampleController extends Controller
             'queue' => config('queue'),
             'services' => config('services'),
         ]);
-    }
-
-    public function logs()
-    {
-        return [];
     }
 }

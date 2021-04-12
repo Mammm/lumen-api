@@ -5,11 +5,11 @@ namespace App\Contracts\Repositories;
 use Prettus\Repository\Contracts\RepositoryInterface;
 
 /**
- * Interface DailySignInLogRepository.
+ * Interface GoldLogRepository.
  *
  * @package namespace App\Contracts\Repositories;
  */
-interface DailySignInLogRepository extends RepositoryInterface
+interface GoldHistoryRepository extends RepositoryInterface
 {
     //
 }

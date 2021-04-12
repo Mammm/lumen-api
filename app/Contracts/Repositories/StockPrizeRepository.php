@@ -5,11 +5,11 @@ namespace App\Contracts\Repositories;
 use Prettus\Repository\Contracts\RepositoryInterface;
 
 /**
- * Interface DailyShareLogRepository.
+ * Interface PrizeStockRepository.
  *
  * @package namespace App\Contracts\Repositories;
  */
-interface DailyShareLogRepository extends RepositoryInterface
+interface StockPrizeRepository extends RepositoryInterface
 {
     //
 }

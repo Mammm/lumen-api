@@ -4,15 +4,15 @@ namespace App\Repositories\Eloquent;
 
 use Prettus\Repository\Eloquent\BaseRepository;
 use Prettus\Repository\Criteria\RequestCriteria;
-use App\Contracts\Repositories\DailyShareLogRepository;
-use App\Repositories\Models\ShareHistory;
+use App\Contracts\Repositories\CheckHistoryRepository;
+use App\Repositories\Models\CheckHistory;
 
 /**
- * Class DailyShareLogRepositoryEloquent.
+ * Class DailySignInLogRepositoryEloquent.
  *
  * @package namespace App\Repositories\Eloquent;
  */
-class DailyShareLogRepositoryEloquent extends BaseRepository implements DailyShareLogRepository
+class CheckHistoryRepositoryEloquent extends BaseRepository implements CheckHistoryRepository
 {
     /**
      * Specify Model class name
@@ -21,7 +21,7 @@ class DailyShareLogRepositoryEloquent extends BaseRepository implements DailySha
      */
     public function model()
     {
-        return ShareHistory::class;
+        return CheckHistory::class;
     }
 
 
