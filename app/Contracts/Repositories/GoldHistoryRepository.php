@@ -2,6 +2,7 @@
 
 namespace App\Contracts\Repositories;
 
+use Illuminate\Database\Eloquent\Model;
 use Prettus\Repository\Contracts\RepositoryInterface;
 
 /**
@@ -11,5 +12,10 @@ use Prettus\Repository\Contracts\RepositoryInterface;
  */
 interface GoldHistoryRepository extends RepositoryInterface
 {
-    //
+    /**
+     * 创建金额流水
+     * @param array $attr
+     * @return Model
+     */
+    function insertLog(array $attr): Model;
 }

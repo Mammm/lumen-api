@@ -34,4 +34,21 @@ interface UserRepository extends RepositoryInterface, RepositoryCriteriaInterfac
      * @return User
      */
     function insertUser(array $attr, string $operator): User;
+
+    /**
+     * 更新用户金额记录
+     * @param int $userId 用户id
+     * @param int $gold 金额
+     * @param int $version 版本号
+     * @return bool
+     */
+    function updateGoldByVersion(int $userId, int $gold, int $version): bool;
+
+    /**
+     * 自增长签到天数
+     * @param int $userId
+     * @param int $version
+     * @return bool
+     */
+    function incrementCheckinByVersion(int $userId, int $version): bool;
 }

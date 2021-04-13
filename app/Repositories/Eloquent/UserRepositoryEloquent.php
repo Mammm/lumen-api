@@ -16,7 +16,6 @@ use App\Repositories\Criteria\RequestCriteria;
 use App\Repositories\Enums\ResponseCodeEnum;
 use App\Repositories\Models\User;
 use App\Repositories\Validators\UserValidator;
-use App\Support\Constant;
 use Exception;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Log;
@@ -37,6 +36,11 @@ class UserRepositoryEloquent extends BaseRepository implements UserRepository
     public function boot()
     {
         $this->pushCriteria(app(RequestCriteria::class));
+    }
+
+    public function changeGold()
+    {
+
     }
 
     /**
@@ -81,5 +85,40 @@ class UserRepositoryEloquent extends BaseRepository implements UserRepository
         }
 
         return $this->model;
+    }
+
+    /**
+     * 更新用户金额记录
+     * @param int $userId 用户id
+     * @param int $gold 金额
+     * @param int $version 版本号
+     * @return bool
+     */
+    public function updateGoldByVersion(int $userId, int $gold, int $version): bool {
+        $affected = $this->model->newQuery()
+            ->where("id", $userId)
+            ->where("version", $version)
+            ->update([
+                "gold" => $gold,
+                "version" => $version + 1
+            ]);
+
+        return $affected > 0;
+    }
+
+    /**
+     * 自增长签到天数
+     * @param int $userId
+     * @param int $version
+     * @return bool
+     */
+    public function incrementCheckinByVersion(int $userId, int $version): bool
+    {
+        $affected = $this->model->newQuery()
+            ->where("id", $userId)
+            ->where("version", $version)
+            ->increment("checkin", 1, ["version", $version + 1]);
+
+        return $affected > 0;
     }
 }
