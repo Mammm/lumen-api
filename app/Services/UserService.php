@@ -22,11 +22,14 @@ use App\Repositories\Presenters\UserPresenter;
 use App\Support\Constant;
 use EasyWeChat\OfficialAccount\Application;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 
 class UserService
 {
+    const GAME_GOLD = 3;
+
     const USER_INVITE_URL = "https://localhost";
     private array $posterBackgroundImgs = [
         "",
@@ -44,6 +47,8 @@ class UserService
     private StockMedalService $stockMedalService;
     private StockPrizeRepository $stockPrizeRepository;
     private StockPrizeService $stockPrizeService;
+    private GoldService $goldService;
+    private MedalService $medalService;
 
     public function __construct(Application $officialAccountApp,
                                 UserRepository $userRepository,
@@ -54,7 +59,9 @@ class UserService
                                 StockMedalRepository $stockMedalRepository,
                                 StockMedalService $stockMedalService,
                                 StockPrizeRepository $stockPrizeRepository,
-                                StockPrizeService $stockPrizeService)
+                                StockPrizeService $stockPrizeService,
+                                GoldService $goldService,
+                                MedalService $medalService)
     {
         $this->officialAccountApp = $officialAccountApp;
         $this->userRepository = $userRepository;
@@ -66,6 +73,28 @@ class UserService
         $this->stockMedalService = $stockMedalService;
         $this->stockPrizeRepository = $stockPrizeRepository;
         $this->stockPrizeService = $stockPrizeService;
+        $this->goldService = $goldService;
+        $this->medalService = $medalService;
+    }
+
+    public function gameStart()
+    {
+        $user = $this->userRepository->find(Auth::id());
+        if ($user->gold < self::GAME_GOLD) {
+            stop("金币不足");
+        }
+
+        DB::beginTransaction();
+        try {
+            $this->goldService->adjustGold($user, -self::GAME_GOLD, "游戏消费");
+            $medal = $this->medalService->luckDraw();
+            $this->stockMedalService->addStockMedal($user, $medal);
+        } catch (\Throwable $e) {
+          stop("游戏发生错误 - {$e->getMessage()}");
+        }
+        DB::commit();
+
+        return $medal;
     }
 
     public function cashPrize(int $id, int $prizeId)
@@ -122,8 +151,9 @@ class UserService
         return ["posterUrl" => $poster[mt_rand(0, 2)]];
     }
 
-    private function newUserPoster(int $id) {
-        $url = self::USER_INVITE_URL."?inviteBy={$id}";
+    private function newUserPoster(int $id)
+    {
+        $url = self::USER_INVITE_URL . "?inviteBy={$id}";
         $qrCodePath = $this->posterService->makeQrCodeImage($url);
 
         $poster = [];

@@ -60,4 +60,10 @@ interface StockMedalRepository extends RepositoryInterface
      * @return StockMedal|null
      */
     function getByUserIdAndDescMedalId(int $userId);
+
+    /**
+     * 获得排行版前100
+     * @return mixed
+     */
+    function top100();
 }

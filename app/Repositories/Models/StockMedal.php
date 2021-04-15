@@ -23,4 +23,9 @@ class StockMedal extends Model implements Transformable
     {
         return $this->belongsTo(Medal::class, "medal_id");
     }
+
+    public function user()
+    {
+        return $this->belongsTo(User::class, "user_id");
+    }
 }

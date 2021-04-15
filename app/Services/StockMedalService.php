@@ -11,6 +11,7 @@ use App\Repositories\Models\Medal;
 use App\Repositories\Models\StockMedal;
 use App\Repositories\Models\User;
 use App\Repositories\Presenters\StockMedalPresenter;
+use App\Repositories\Presenters\Top100Presenter;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
@@ -27,6 +28,12 @@ class StockMedalService
     {
         $this->stockMedalRepository = $stockMedalRepository;
         $this->stockMedalHistoryRepository = $stockMedalHistoryRepository;
+    }
+
+    public function top100()
+    {
+        $this->stockMedalRepository->setPresenter(Top100Presenter::class);
+        return $this->stockMedalRepository->top100();
     }
 
     /**

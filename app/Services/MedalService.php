@@ -30,7 +30,7 @@ class MedalService
      */
     public function luckDraw()
     {
-        $medalList = $this->medalRepository->all(["id", "odds"]);
+        $medalList = $this->medalRepository->all();
         $max = $medalList->sum("odds");
 
         $luckNumber = mt_rand(0, $max);
@@ -39,7 +39,7 @@ class MedalService
         foreach ($medalList as $item) {
             $flag += $item->odds;
             if ($flag >= $luckNumber) {
-                return $item->id;
+                return $item;
             }
         }
         throw new \Exception("未设置任何勋章");

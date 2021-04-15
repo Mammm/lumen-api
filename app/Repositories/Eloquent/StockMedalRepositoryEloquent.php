@@ -93,4 +93,15 @@ class StockMedalRepositoryEloquent extends BaseRepository implements StockMedalR
             ->orderBy("medal_id", "desc")
             ->first();
     }
+
+    public function top100()
+    {
+        return $this->model->newQuery()
+            ->with("user")
+            ->selectRaw("user_id, SUM(number) as number")
+            ->groupBy("user_id")
+            ->orderBy("number", "desc")
+            ->take(100)
+            ->get();
+    }
 }
