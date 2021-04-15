@@ -51,4 +51,12 @@ interface UserRepository extends RepositoryInterface, RepositoryCriteriaInterfac
      * @return bool
      */
     function incrementCheckinByVersion(int $userId, int $version): bool;
+
+    /**
+     * 更新用户的海报
+     * @param int $userId
+     * @param array $poster
+     * @return bool
+     */
+    function storePoster(int $userId, array $poster): bool;
 }

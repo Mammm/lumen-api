@@ -11,29 +11,37 @@
 
 namespace App\Repositories\Transformers;
 
-use App\Repositories\Enums\PermissionEnum;
 use App\Repositories\Models\User;
+use League\Fractal\Resource\Item;
 use League\Fractal\TransformerAbstract;
 
 class UserTransformer extends TransformerAbstract
 {
+    protected $defaultIncludes = [
+        "dailyBonus", "dailyShare"
+    ];
+
     public function transform(User $user)
     {
         $data = [
-            'id' => $user->id,
-            'nickname' => $user->name,
-            'email' => $user->email,
+            "id" => $user->id,
+            "nickname" => $user->nickname,
+            "avatarUrl" => $user->avatarUrl,
+            "gold" => $user->gold
         ];
-
-        if (! $this->checkColumnPermission()) {
-            $data['email'] = '**** ****';
-        }
 
         return $data;
     }
 
-    protected function checkColumnPermission()
+    public function includeDailyBonus(User $user): Item
     {
-        return auth('api')->user()->can(PermissionEnum::DATA_USERS_COLUMN_EMAIL()->name);
+        $user->checkHistory;
+        return $this->item($user, new UserDailyBonusTransformer());
+    }
+
+    public function includeDailyShare(User $user): Item
+    {
+        $user->shareHistory;
+        return $this->item($user, new UserDailyShareTransformer());
     }
 }

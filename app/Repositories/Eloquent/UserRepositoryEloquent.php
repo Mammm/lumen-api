@@ -38,11 +38,6 @@ class UserRepositoryEloquent extends BaseRepository implements UserRepository
         $this->pushCriteria(app(RequestCriteria::class));
     }
 
-    public function changeGold()
-    {
-
-    }
-
     /**
      * 手机号查找用户
      * @param string $telephoneNumber
@@ -94,7 +89,8 @@ class UserRepositoryEloquent extends BaseRepository implements UserRepository
      * @param int $version 版本号
      * @return bool
      */
-    public function updateGoldByVersion(int $userId, int $gold, int $version): bool {
+    public function updateGoldByVersion(int $userId, int $gold, int $version): bool
+    {
         $affected = $this->model->newQuery()
             ->where("id", $userId)
             ->where("version", $version)
@@ -118,6 +114,21 @@ class UserRepositoryEloquent extends BaseRepository implements UserRepository
             ->where("id", $userId)
             ->where("version", $version)
             ->increment("checkin", 1, ["version", $version + 1]);
+
+        return $affected > 0;
+    }
+
+    /**
+     * 更新用户的海报
+     * @param int $userId
+     * @param array $poster
+     * @return bool
+     */
+    public function storePoster(int $userId, array $poster): bool
+    {
+        $affected = $this->model->newQuery()
+            ->where("id", $userId)
+            ->update(["poster" => implode(",", $poster)]);
 
         return $affected > 0;
     }

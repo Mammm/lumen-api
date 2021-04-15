@@ -24,6 +24,7 @@ class PostService
 
     public function handleSearchList()
     {
+        abort();
         return $this->repository->searchPage();
     }
 }

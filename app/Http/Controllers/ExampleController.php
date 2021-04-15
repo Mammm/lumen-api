@@ -12,7 +12,8 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use Jiannei\Response\Laravel\Support\Facades\Response;
+use Intervention\Image\Facades\Image;
+use SimpleSoftwareIO\QrCode\Facades\QrCode;
 
 class ExampleController extends Controller
 {
@@ -27,16 +28,6 @@ class ExampleController extends Controller
 
     public function configurations(Request $request)
     {
-        return Response::success([
-            'app' => config('app'),
-            'auth' => config('auth'),
-            'broadcasting' => config('broadcasting'),
-            'cache' => config('cache'),
-            'database' => config('database'),
-            'filesystems' => config('filesystems'),
-            'logging' => config('logging'),
-            'queue' => config('queue'),
-            'services' => config('services'),
-        ]);
+        dd(storage_url(public_path(date("Ymd")."/12345.png")));
     }
 }

@@ -27,6 +27,17 @@ class UsersController extends Controller
         $this->middleware('auth:api', ['except' => ['store']]);
     }
 
+    public function getPrize(int $userId, int $prizeId)
+    {
+
+    }
+
+    public function poster()
+    {
+        $data = $this->userService->randomGetPoster(Auth::user()->id);
+        return Response::success($data);
+    }
+
     public function show()
     {
         $user = $this->userService->handleSearchItem(Auth::user()->id);

@@ -11,6 +11,10 @@
 
 namespace App\Services;
 
+use App\Contracts\Repositories\MedalRepository;
+use App\Contracts\Repositories\PrizeRepository;
+use App\Contracts\Repositories\StockMedalRepository;
+use App\Contracts\Repositories\StockPrizeRepository;
 use App\Contracts\Repositories\UserRepository;
 use App\Contracts\Repositories\WechatAccountRepository;
 use App\Repositories\Enums\ResponseCodeEnum;
@@ -18,21 +22,117 @@ use App\Repositories\Presenters\UserPresenter;
 use App\Support\Constant;
 use EasyWeChat\OfficialAccount\Application;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 
 class UserService
 {
+    const USER_INVITE_URL = "https://localhost";
+    private array $posterBackgroundImgs = [
+        "",
+        "",
+        ""
+    ];
+
     private Application $officialAccountApp;
     private UserRepository $userRepository;
     private WechatAccountRepository $wechatAccountRepository;
+    private PosterService $posterService;
+    private PrizeRepository $prizeRepository;
+    private MedalRepository $medalRepository;
+    private StockMedalRepository $stockMedalRepository;
+    private StockMedalService $stockMedalService;
+    private StockPrizeRepository $stockPrizeRepository;
+    private StockPrizeService $stockPrizeService;
 
     public function __construct(Application $officialAccountApp,
                                 UserRepository $userRepository,
-                                WechatAccountRepository $wechatAccountRepository)
+                                WechatAccountRepository $wechatAccountRepository,
+                                PosterService $posterService,
+                                PrizeRepository $prizeRepository,
+                                MedalRepository $medalRepository,
+                                StockMedalRepository $stockMedalRepository,
+                                StockMedalService $stockMedalService,
+                                StockPrizeRepository $stockPrizeRepository,
+                                StockPrizeService $stockPrizeService)
     {
         $this->officialAccountApp = $officialAccountApp;
         $this->userRepository = $userRepository;
         $this->wechatAccountRepository = $wechatAccountRepository;
+        $this->posterService = $posterService;
+        $this->prizeRepository = $prizeRepository;
+        $this->medalRepository = $medalRepository;
+        $this->stockMedalRepository = $stockMedalRepository;
+        $this->stockMedalService = $stockMedalService;
+        $this->stockPrizeRepository = $stockPrizeRepository;
+        $this->stockPrizeService = $stockPrizeService;
+    }
+
+    public function cashPrize(int $id, int $prizeId)
+    {
+        $user = $this->userRepository->find($id);
+        $prize = $this->prizeRepository->find($prizeId);
+
+        if ($prize->type == 0) {
+            if ($this->stockPrizeService->checkHasBeenGetCouponPrize($user, $prize)) {
+                stop("优惠券奖励{$prize->name}只能领取一次");
+            }
+        }
+        $cashMedalCodeList = explode(",", $prizeId->exchange_rule);
+
+        $stockList = $this->stockMedalService->listCashPrizeMedal($id, $cashMedalCodeList);
+        if (count($stockList) != count($cashMedalCodeList)) {
+            stop("勋章数量不足兑换奖品");
+        }
+        $missInventory = $stockList->filter(function ($key, $value) {
+            return $value->number <= 0;
+        })->all();
+        if (count($missInventory) > 0) {
+            stop("勋章数量不足兑换奖品");
+        }
+
+        DB::beginTransaction();
+        try {
+            $stockList->each(function ($item, $key) use ($prize) {
+                $this->stockMedalService->decrementInventory($item, "兑换奖励{$prize->name}");
+            });
+            $attr = [
+                "userId" => $user->id,
+                "prizeId" => $prize->id
+            ];
+            $this->stockPrizeRepository->insertStockPrize($attr);
+        } catch (\Throwable $e) {
+            stop("领取奖励失败，请稍后再次尝试领取 - {$e->getMessage()}");
+        }
+        DB::commit();
+    }
+
+    public function randomGetPoster(int $id): array
+    {
+        $user = $this->userRepository->find($id);
+
+        $poster = null;
+        if (strlen($user->poster) > 0) {
+            $poster = explode(",", $user->poster);
+        } else {
+            $poster = $this->newUserPoster($user->id);
+            $this->userRepository->storePoster($user->id, $poster);
+        }
+
+        return ["posterUrl" => $poster[mt_rand(0, 2)]];
+    }
+
+    private function newUserPoster(int $id) {
+        $url = self::USER_INVITE_URL."?inviteBy={$id}";
+        $qrCodePath = $this->posterService->makeQrCodeImage($url);
+
+        $poster = [];
+        foreach ($this->posterBackgroundImgs as $posterBackgroundImg) {
+            $posterPath = $this->posterService->makePosterImage($posterBackgroundImg, $qrCodePath);
+            $poster[] = storage_url($posterPath);
+        }
+
+        return $poster;
     }
 
     public function handleSearchItem($id)

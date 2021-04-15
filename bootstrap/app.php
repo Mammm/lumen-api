@@ -155,6 +155,15 @@ $app->register(\Jiannei\Response\Laravel\Providers\LumenServiceProvider::class);
 $app->register(\Overtrue\LaravelWeChat\ServiceProvider::class);
 $app->register(App\Providers\RepositoryServiceProvider::class);
 $app->register(\App\Providers\AccountServiceProvider::class);
+$app->register(\SimpleSoftwareIO\QrCode\QrCodeServiceProvider::class);
+$app->register(\Intervention\Image\ImageServiceProviderLumen::class);
+
+/**
+ * Custom Alias
+ */
+$app->alias("QrCode", \SimpleSoftwareIO\QrCode\Facades\QrCode::class);
+$app->alias("Image", \Intervention\Image\Facades\Image::class);
+
 /*
 |--------------------------------------------------------------------------
 | Load The Application Routes

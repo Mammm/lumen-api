@@ -38,4 +38,5 @@ class ResponseCodeEnum extends HttpStatusCodeEnum
     // 业务操作错误码（外部服务或内部服务调用...）
     const SERVICE_REGISTER_ERROR = 500101;
     const SERVICE_LOGIN_ERROR = 500102;
+    const SERVICE_ERROR = 500103;
 }

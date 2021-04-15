@@ -40,6 +40,7 @@ return [
         // 业务操作失败：授权业务
         ResponseCodeEnum::SERVICE_REGISTER_ERROR => '注册失败',
         ResponseCodeEnum::SERVICE_LOGIN_ERROR => '登录失败',
+        ResponseCodeEnum::SERVICE_ERROR => '业务错误',
     ],
 
     // 角色

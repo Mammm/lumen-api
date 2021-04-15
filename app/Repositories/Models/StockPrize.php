@@ -18,4 +18,9 @@ class StockPrize extends Model implements Transformable
     protected $table = "stock_prize";
 
     protected $guarded = [];
+
+    public function prize()
+    {
+        return $this->belongsTo(Prize::class, "prize_id");
+    }
 }

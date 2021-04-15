@@ -18,4 +18,9 @@ class StockMedal extends Model implements Transformable
     protected $table = "stock_medal";
 
     protected $guarded = [];
+
+    public function medal()
+    {
+        return $this->belongsTo(Medal::class, "medal_id");
+    }
 }
