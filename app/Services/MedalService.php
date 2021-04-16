@@ -5,7 +5,6 @@ namespace App\Services;
 
 
 use App\Contracts\Repositories\MedalRepository;
-use App\Repositories\Enums\ResponseCodeEnum;
 use App\Repositories\Presenters\MedalPresenter;
 
 class MedalService
@@ -42,6 +41,6 @@ class MedalService
                 return $item;
             }
         }
-        throw new \Exception("未设置任何勋章");
+        throw new \Exception("未命中勋章");
     }
 }

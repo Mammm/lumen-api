@@ -4,18 +4,18 @@
 namespace App\Repositories\Transformers;
 
 
-use App\Repositories\Models\StockMedal;
+use App\Repositories\Models\User;
 use League\Fractal\TransformerAbstract;
 
 class Top100Transformer extends TransformerAbstract
 {
-    public function transform(StockMedal $stockMedal)
+    public function transform(User $user)
     {
         return [
-            "id" => $stockMedal->user->id,
-            "name" => $stockMedal->user->nickname,
-            "avatarUrl" => $stockMedal->user->avatar_url,
-            "medal" => $stockMedal->number
+            "id" => $user->id,
+            "name" => $user->nickname,
+            "avatarUrl" => $user->avatar_url,
+            "medal" => $user->medal
         ];
     }
 }

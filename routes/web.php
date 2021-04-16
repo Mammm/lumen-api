@@ -35,9 +35,29 @@ Route::group(['prefix' => 'test'], function () {
 });
 
 // 用户管理
-Route::post('users', 'UsersController@store');
-Route::get('users', 'UsersController@show');
-Route::get('users', 'UsersController@index');
+Route::group(['prefix' => 'mystery-boxes'], function () {
+    Route::get("rank", "UsersController@rank");
+    Route::post("game", "UsersController@gameStart");
+    Route::get("prize", "PrizeController@all");
+
+    Route::group(["prefix" => "user"], function () {
+        Route::post('/', 'UsersController@store');
+        Route::get('/', 'UsersController@show');
+        Route::get("poster", 'UsersController@poster');
+
+        Route::post("prize", "UsersController@getPrize");
+        Route::get("prize", "UsersController@prizeList");
+        Route::get("medal", "UsersController@medalList");
+
+        Route::post("coupon", "UsersController@receiveCoupon");
+        Route::post("prize/receive-address", "UsersController@receiveCoupon");
+    });
+    Route::group(["prefix" => "daily-bonus"], function () {
+        Route::post("check-in", "DailyBonusController@checkIn");
+        Route::post("share", "DailyBonusController@share");
+    });
+});
+
 
 // 授权管理
 Route::post('authorization', 'AuthorizationController@store');

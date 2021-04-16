@@ -59,4 +59,24 @@ interface UserRepository extends RepositoryInterface, RepositoryCriteriaInterfac
      * @return bool
      */
     function storePoster(int $userId, array $poster): bool;
+
+    /**
+     * 增长勋章累计数量
+     * @param int $userId
+     * @return bool
+     */
+    function incrementMedal(int $userId): bool;
+
+    /**
+     * 排名
+     * @param User $user
+     * @return mixed
+     */
+    function ranking(User $user);
+
+    /**
+     * 前100
+     * @return mixed
+     */
+    function top100();
 }

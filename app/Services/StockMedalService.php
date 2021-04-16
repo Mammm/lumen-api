@@ -30,12 +30,6 @@ class StockMedalService
         $this->stockMedalHistoryRepository = $stockMedalHistoryRepository;
     }
 
-    public function top100()
-    {
-        $this->stockMedalRepository->setPresenter(Top100Presenter::class);
-        return $this->stockMedalRepository->top100();
-    }
-
     /**
      * 获得用户所有的勋章数据
      * @param Request $request

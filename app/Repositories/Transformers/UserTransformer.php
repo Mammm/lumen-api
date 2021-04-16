@@ -27,7 +27,8 @@ class UserTransformer extends TransformerAbstract
             "id" => $user->id,
             "nickname" => $user->nickname,
             "avatarUrl" => $user->avatarUrl,
-            "gold" => $user->gold
+            "gold" => $user->gold,
+            "medal" => $user->stockMedal->sum("number")
         ];
 
         return $data;

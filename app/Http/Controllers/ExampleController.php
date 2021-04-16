@@ -11,6 +11,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Repositories\Models\User;
 use Illuminate\Http\Request;
 use Intervention\Image\Facades\Image;
 use SimpleSoftwareIO\QrCode\Facades\QrCode;
@@ -28,6 +29,6 @@ class ExampleController extends Controller
 
     public function configurations(Request $request)
     {
-        dd(storage_url(public_path(date("Ymd")."/12345.png")));
+        dd(User::selectRaw("*")->where("id", ">", 0)->get());
     }
 }

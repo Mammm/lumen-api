@@ -18,6 +18,7 @@ use App\Contracts\Repositories\StockPrizeRepository;
 use App\Contracts\Repositories\UserRepository;
 use App\Contracts\Repositories\WechatAccountRepository;
 use App\Repositories\Enums\ResponseCodeEnum;
+use App\Repositories\Presenters\Top100Presenter;
 use App\Repositories\Presenters\UserPresenter;
 use App\Support\Constant;
 use EasyWeChat\OfficialAccount\Application;
@@ -29,7 +30,7 @@ use Illuminate\Support\Facades\Log;
 class UserService
 {
     const GAME_GOLD = 3;
-
+    const INVITE_GOLD = 3;
     const USER_INVITE_URL = "https://localhost";
     private array $posterBackgroundImgs = [
         "",
@@ -77,6 +78,28 @@ class UserService
         $this->medalService = $medalService;
     }
 
+    public function top100()
+    {
+        $this->userRepository->setPresenter(Top100Presenter::class);
+        $hundred = $this->userRepository->top100();
+
+        $user = $this->userRepository->find(Auth::id());
+        $ranking = $this->userRepository->ranking($user);
+
+        $data = [
+            "hundred" => $hundred,
+            "self" => [
+                "id" => $user->id,
+                "name" => $user->name,
+                "avatarUrl" =>$user->avatar_url,
+                "top" => $ranking,
+                "medal" => $user->medal
+            ]
+        ];
+
+        return $data;
+    }
+
     public function gameStart()
     {
         $user = $this->userRepository->find(Auth::id());
@@ -89,6 +112,7 @@ class UserService
             $this->goldService->adjustGold($user, -self::GAME_GOLD, "游戏消费");
             $medal = $this->medalService->luckDraw();
             $this->stockMedalService->addStockMedal($user, $medal);
+            $this->userRepository->incrementMedal($user->id);
         } catch (\Throwable $e) {
           stop("游戏发生错误 - {$e->getMessage()}");
         }
@@ -109,7 +133,7 @@ class UserService
         }
         $cashMedalCodeList = explode(",", $prizeId->exchange_rule);
 
-        $stockList = $this->stockMedalService->listCashPrizeMedal($id, $cashMedalCodeList);
+        $stockList = $this->stockMedalService->listCashPrizeMedal($user, $cashMedalCodeList);
         if (count($stockList) != count($cashMedalCodeList)) {
             stop("勋章数量不足兑换奖品");
         }
@@ -151,7 +175,7 @@ class UserService
         return ["posterUrl" => $poster[mt_rand(0, 2)]];
     }
 
-    private function newUserPoster(int $id)
+    private function newUserPoster(int $id): array
     {
         $url = self::USER_INVITE_URL . "?inviteBy={$id}";
         $qrCodePath = $this->posterService->makeQrCodeImage($url);
@@ -227,6 +251,11 @@ class UserService
             "subscribe_time" => $wechatUser["subscribe_time"],
             "subscribe_scene" => $wechatUser["subscribe_scene"],
         ];
-        $this->wechatAccountRepository->insertAccount($wechatAccountAttr, Constant::OPERATOR);
+        $newAccount = $this->wechatAccountRepository->insertAccount($wechatAccountAttr, Constant::OPERATOR);
+
+        if ($request->has("inviteBy")) {
+            $inviteUser = $this->userRepository->find($request->input("inviteBy"));
+            $this->goldService->adjustGold($inviteUser, self::INVITE_GOLD, "邀请{$newAccount->nickname}注册奖励");
+        }
     }
 }

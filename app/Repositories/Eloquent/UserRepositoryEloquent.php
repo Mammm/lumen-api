@@ -68,6 +68,7 @@ class UserRepositoryEloquent extends BaseRepository implements UserRepository
         $this->model->freeze = 0;
         $this->model->referrer = $attr["referrer"];
         $this->model->gold = 0;
+        $this->model->medal = 0;
         $this->model->version = 1;
         $this->model->gmt_created = $now;
         $this->model->gmt_modified = $now;
@@ -131,5 +132,37 @@ class UserRepositoryEloquent extends BaseRepository implements UserRepository
             ->update(["poster" => implode(",", $poster)]);
 
         return $affected > 0;
+    }
+
+    /**
+     * 增长勋章累计数量
+     * @param int $userId
+     * @return bool
+     */
+    public function incrementMedal(int $userId): bool
+    {
+        $affected = $this->model->newQuery()
+            ->where("id", $userId)
+            ->increment("medeal");
+
+        return $affected > 0;
+    }
+
+    public function top100()
+    {
+        return $this->model->newQuery()
+            ->orderBy("medal", "desc")
+            ->orderBy("id", "asc")
+            ->take(100)
+            ->get();
+    }
+
+    public function ranking(User $user)
+    {
+        return $this->model->newQuery()
+            ->select(["id"])
+            ->where("medal", ">=", $user->medal)
+            ->where("id", "<", $user->id)
+            ->count();
     }
 }

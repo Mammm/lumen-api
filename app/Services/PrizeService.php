@@ -21,6 +21,4 @@ class PrizeService
         $this->prizeRepository->setPresenter(PrizePresenter::class);
         return $this->prizeRepository->all();
     }
-
-
 }
