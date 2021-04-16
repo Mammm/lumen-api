@@ -14,6 +14,7 @@ class PrizeController
     public function __construct(PrizeService $prizeService)
     {
         $this->prizeService = $prizeService;
+        $this->middleware('auth:api');
     }
 
     public function all()

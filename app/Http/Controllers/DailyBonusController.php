@@ -15,6 +15,7 @@ class DailyBonusController extends Controller
     public function __construct(DailyBonusService $dailyBonusService)
     {
         $this->dailyBonusService = $dailyBonusService;
+        $this->middleware('auth:api');
     }
 
     public function checkIn()
