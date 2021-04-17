@@ -42,7 +42,6 @@ class AuthorizationController extends Controller
 
     public function store(Request $request)
     {
-        assert(false, "错误");
         $this->validate($request, [
             'name' => 'required',
             'password' => 'required',

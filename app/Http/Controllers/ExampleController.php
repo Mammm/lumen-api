@@ -10,11 +10,9 @@
  */
 
 namespace App\Http\Controllers;
-
-use App\Repositories\Models\User;
+use EasyWeChat\Kernel\Support\AES;
 use Illuminate\Http\Request;
-use Intervention\Image\Facades\Image;
-use SimpleSoftwareIO\QrCode\Facades\QrCode;
+use Illuminate\Support\Facades\Crypt;
 
 class ExampleController extends Controller
 {
@@ -29,6 +27,10 @@ class ExampleController extends Controller
 
     public function configurations(Request $request)
     {
-        dd(User::selectRaw("*")->where("id", ">", 0)->get());
+        $data = '{"clerkNumber":"2000005094","brandId":1}';
+        $key = 'abcd1234abcd1234';
+
+        $secret = Crypt::encrypt($data, false);
+        dd($secret);
     }
 }
