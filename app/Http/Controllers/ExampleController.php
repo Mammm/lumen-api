@@ -10,9 +10,8 @@
  */
 
 namespace App\Http\Controllers;
-use EasyWeChat\Kernel\Support\AES;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Crypt;
+use Jiannei\Response\Laravel\Support\Facades\Response;
 
 class ExampleController extends Controller
 {
@@ -27,10 +26,16 @@ class ExampleController extends Controller
 
     public function configurations(Request $request)
     {
-        $data = '{"clerkNumber":"2000005094","brandId":1}';
-        $key = 'abcd1234abcd1234';
-
-        $secret = Crypt::encrypt($data, false);
-        dd($secret);
+        return Response::success([
+            'app' => config('app'),
+            'auth' => config('auth'),
+            'broadcasting' => config('broadcasting'),
+            'cache' => config('cache'),
+            'database' => config('database'),
+            'filesystems' => config('filesystems'),
+            'logging' => config('logging'),
+            'queue' => config('queue'),
+            'services' => config('services'),
+        ]);
     }
 }
