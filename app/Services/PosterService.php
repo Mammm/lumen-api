@@ -10,7 +10,7 @@ use SimpleSoftwareIO\QrCode\Facades\QrCode;
 class PosterService
 {
     private string $qrCodeFormat = "png";
-    private int $qrCodeSize = 100;
+    private int $qrCodeSize = 184;
 
     /**
      * 创建二维码
@@ -36,7 +36,7 @@ class PosterService
         $postPath = new_tmp_file("jpg");
 
         Image::make($backgroundImg)
-            ->insert($qrCodeImg, 'bottom-left', 157, 338)
+            ->insert($qrCodeImg, 'bottom-left', 35, 30)
             ->save($postPath);
 
         return $postPath;

@@ -33,11 +33,11 @@ class UserService
 {
     const GAME_GOLD = 3;
     const INVITE_GOLD = 3;
-    const USER_INVITE_URL = "https://localhost";
+    const USER_INVITE_URL = "http://119.23.43.225:88/blindbox/index.html";
     private array $posterBackgroundImgs = [
-        "",
-        "",
-        ""
+        "http://119.23.43.225:88/storage/poster/background_1.jpg",
+        "http://119.23.43.225:88/storage/poster/background_2.jpg",
+        "http://119.23.43.225:88/storage/poster/background_3.jpg"
     ];
 
     private Application $officialAccountApp;
