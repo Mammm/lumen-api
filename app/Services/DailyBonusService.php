@@ -10,6 +10,7 @@ use App\Contracts\Repositories\ShareHistoryRepository;
 use App\Contracts\Repositories\UserRepository;
 use App\Repositories\Enums\ResponseCodeEnum;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 use Throwable;
 
 class DailyBonusService
@@ -70,6 +71,7 @@ class DailyBonusService
             //增加金币
             $this->goldService->adjustGold($user, $goldNumber, "每日签到获得金币");
         } catch (Throwable $e) {
+            Log::error($e);
             abort(ResponseCodeEnum::SYSTEM_ERROR, "签到失败，请稍后再次尝试");
         }
         DB::commit();
