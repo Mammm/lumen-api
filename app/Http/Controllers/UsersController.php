@@ -38,6 +38,8 @@ class UsersController extends Controller
     {
         $this->validate($request, [
             "phone" => ["required"],
+        ], [
+            "required" => "手机号不能为空"
         ]);
         $this->userService->sendRegisterVerifyCode($request);
         return Response::success();
