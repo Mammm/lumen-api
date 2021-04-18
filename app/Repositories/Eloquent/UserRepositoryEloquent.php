@@ -157,12 +157,12 @@ class UserRepositoryEloquent extends BaseRepository implements UserRepository
             ->get();
     }
 
-    public function ranking(User $user)
+    public function ranking(int $id, int $medal)
     {
         return $this->model->newQuery()
             ->select(["id"])
-            ->where("medal", ">=", $user->medal)
-            ->where("id", "<", $user->id)
-            ->count();
+            ->where("medal", ">=", $medal)
+            ->where("id", "<", $id)
+            ->count() + 1;
     }
 }

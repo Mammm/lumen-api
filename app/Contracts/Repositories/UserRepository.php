@@ -69,10 +69,11 @@ interface UserRepository extends RepositoryInterface, RepositoryCriteriaInterfac
 
     /**
      * 排名
-     * @param User $user
+     * @param int $id
+     * @param int $medal
      * @return mixed
      */
-    function ranking(User $user);
+    function ranking(int $id, int $medal);
 
     /**
      * 前100
