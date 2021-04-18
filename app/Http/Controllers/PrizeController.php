@@ -7,7 +7,7 @@ namespace App\Http\Controllers;
 use App\Services\PrizeService;
 use Jiannei\Response\Laravel\Support\Facades\Response;
 
-class PrizeController
+class PrizeController extends Controller
 {
     private PrizeService $prizeService;
 
