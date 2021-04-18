@@ -46,7 +46,7 @@ class StockMedalRepositoryEloquent extends BaseRepository implements StockMedalR
             ->where("id", $id)
             ->where("version", $version)
             ->where("number", ">", 0)
-            ->decrement("number", ["version" => $version + 1]);
+            ->decrement("number", 1, ["version" => $version + 1]);
 
         return $updateLine > 0;
     }
@@ -56,7 +56,7 @@ class StockMedalRepositoryEloquent extends BaseRepository implements StockMedalR
         $updateLine = $this->model->newQuery()
             ->where("id", $id)
             ->where("version", $version)
-            ->increment("number", ["version" => $version + 1]);
+            ->increment("number", 1, ["version" => $version + 1]);
 
         return $updateLine > 0;
     }
