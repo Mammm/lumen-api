@@ -106,6 +106,7 @@ $app->middleware([
 //  注释请求事件（日志相关）
 //  \Jiannei\Logger\Laravel\Http\Middleware\RequestLog::class,
     \Jiannei\Response\Laravel\Http\Middleware\Etag::class,
+    \App\Http\Middleware\CorsMiddleware::class
 ]);
 
 $app->routeMiddleware([
