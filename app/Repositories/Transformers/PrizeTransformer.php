@@ -17,7 +17,9 @@ class PrizeTransformer extends TransformerAbstract
             "type" => $prize->type,
             "imageUrl" => $prize->image_url,
             "inventory" => $prize->quantity,
-            "description" => $prize->description
+            "description" => $prize->description,
+            "exchangeDesc" => $prize->exchange_desc,
+            "remark" => $prize->remark
         ];
     }
 }
