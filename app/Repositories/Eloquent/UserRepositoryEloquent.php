@@ -150,10 +150,9 @@ class UserRepositoryEloquent extends BaseRepository implements UserRepository
 
     public function top100()
     {
-        return $this->model->orderBy("medal", "desc")
-            ->orderBy("id")
-            ->take(100)
-            ->get();
+        $model = $this->model->orderBy("medal", "desc")->orderBy("id")->take(100)->get();
+        $this->resetModel();
+        return $this->parserResult($model);
     }
 
     public function ranking(int $id, int $medal)

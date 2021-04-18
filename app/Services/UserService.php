@@ -88,14 +88,15 @@ class UserService
     public function top100()
     {
         $this->userRepository->setPresenter(Top100Presenter::class);
+
         $hundred = $this->userRepository->top100();
 
-//        $user = $this->userRepository->find(Auth::user()->id);
-//        $user["top"] = $this->userRepository->ranking($user["id"], $user["medal"]);
+        $user = $this->userRepository->find(Auth::user()->id);
+        $user["top"] = $this->userRepository->ranking($user["id"], $user["medal"]);
 
         $data = [
             "hundred" => $hundred,
-//            "self" => $user
+            "self" => $user
         ];
 
         return $data;
