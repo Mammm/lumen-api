@@ -163,6 +163,6 @@ class UserRepositoryEloquent extends BaseRepository implements UserRepository
             ->select(["id"])
             ->where("medal", ">=", $user->medal)
             ->where("id", "<", $user->id)
-            ->get();
+            ->count();
     }
 }

@@ -90,8 +90,9 @@ class UserService
         $this->userRepository->setPresenter(Top100Presenter::class);
         $hundred = $this->userRepository->top100();
 
+        $this->userRepository->skipPresenter();
         $user = $this->userRepository->find(Auth::user()->id);
-        $ranking = $this->userRepository->ranking($user)->count();
+        $ranking = $this->userRepository->ranking($user);
 
         $data = [
             "hundred" => $hundred,
