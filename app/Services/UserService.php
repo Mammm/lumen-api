@@ -80,6 +80,11 @@ class UserService
         $this->medalService = $medalService;
     }
 
+    public function sendRegisterVerifyCode(Request $request)
+    {
+        OutApiService::sendRegisterVerifyCode($request->input("phone"));
+    }
+
     public function top100()
     {
         $this->userRepository->setPresenter(Top100Presenter::class);
@@ -93,7 +98,7 @@ class UserService
             "self" => [
                 "id" => $user->id,
                 "name" => $user->name,
-                "avatarUrl" =>$user->avatar_url,
+                "avatarUrl" => $user->avatar_url,
                 "top" => $ranking,
                 "medal" => $user->medal
             ]
@@ -116,7 +121,7 @@ class UserService
             $this->stockMedalService->addStockMedal($user, $medal);
             $this->userRepository->incrementMedal($user->id);
         } catch (\Throwable $e) {
-          stop("游戏发生错误 - {$e->getMessage()}");
+            stop("游戏发生错误 - {$e->getMessage()}");
         }
         DB::commit();
 

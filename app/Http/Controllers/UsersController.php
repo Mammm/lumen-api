@@ -31,7 +31,13 @@ class UsersController extends Controller
         $this->userService = $userService;
         $this->stockPrizeService = $stockPrizeService;
         $this->stockMedalService = $stockMedalService;
-        $this->middleware('auth:api', ['except' => ['store']]);
+        $this->middleware('auth:api', ['except' => ['store', 'sendRegisterVerifyCode']]);
+    }
+
+    public function sendRegisterVerifyCode(Request $request)
+    {
+        $this->userService->sendRegisterVerifyCode($request);
+        return Response::success();
     }
 
     public function notifyShipping(Request $request)
