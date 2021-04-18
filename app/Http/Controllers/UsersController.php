@@ -11,6 +11,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Resources\MedalResource;
 use App\Services\StockMedalService;
 use App\Services\StockPrizeService;
 use App\Services\UserService;
@@ -77,8 +78,8 @@ class UsersController extends Controller
 
     public function gameStart()
     {
-        $this->userService->gameStart();
-        return Response::success();
+        $medal = $this->userService->gameStart();
+        return Response::success(new MedalResource($medal));
     }
 
     public function rank()
