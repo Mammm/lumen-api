@@ -12,6 +12,6 @@ class UserDailyShareTransformer extends TransformerAbstract
     public function transform(User $user)
     {
         $data = $user->shareHistory->contains("date_of_share", date("Y-m-d"));
-        return $data;
+        return ["taken" => $data];
     }
 }
