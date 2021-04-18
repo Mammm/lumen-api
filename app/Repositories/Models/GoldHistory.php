@@ -18,4 +18,6 @@ class GoldHistory extends Model implements Transformable
     protected $table = "gold_history";
 
     protected $guarded = [];
+
+    public $timestamps = false;
 }

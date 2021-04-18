@@ -18,4 +18,6 @@ class ShareHistory extends Model implements Transformable
     protected $table = "share_history";
 
     protected $guarded = [];
+
+    public $timestamps = false;
 }

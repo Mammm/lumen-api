@@ -18,4 +18,6 @@ class Prize extends Model implements Transformable
     protected $table = "prize";
 
     protected $guarded = [];
+
+    public $timestamps = false;
 }

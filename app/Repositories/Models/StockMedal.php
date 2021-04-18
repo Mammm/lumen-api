@@ -19,6 +19,8 @@ class StockMedal extends Model implements Transformable
 
     protected $guarded = [];
 
+    public $timestamps = false;
+
     public function medal()
     {
         return $this->belongsTo(Medal::class, "medal_id");

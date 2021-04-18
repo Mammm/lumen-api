@@ -18,4 +18,6 @@ class StockMedalHistory extends Model implements Transformable
     protected $table = "stock_medal_history";
 
     protected $guarded = [];
+
+    public $timestamps = false;
 }

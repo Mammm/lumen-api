@@ -26,6 +26,7 @@ class User extends Model implements AuthenticatableContract, JWTSubject
 
     protected $guarded = [];
 
+    public $timestamps = false;
     public function checkHistory(): HasMany
     {
         return $this->hasMany(CheckHistory::class, "user_id");

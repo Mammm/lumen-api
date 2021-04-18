@@ -18,4 +18,6 @@ class Medal extends Model implements Transformable
     protected $table = "medal";
 
     protected $guarded = [];
+
+    public $timestamps = false;
 }
