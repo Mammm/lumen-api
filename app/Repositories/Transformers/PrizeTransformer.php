@@ -14,7 +14,10 @@ class PrizeTransformer extends TransformerAbstract
         return [
             "id" => $prize->id,
             "name" => $prize->name,
+            "type" => $prize->type,
+            "imageUrl" => $prize->image_url,
             "inventory" => $prize->quantity,
+            "description" => $prize->description
         ];
     }
 }
