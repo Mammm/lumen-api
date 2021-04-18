@@ -13,7 +13,7 @@ class CorsMiddleware
             return response()->json('ok', 200, [
                 # 下面参数视request中header而定
                 'Access-Control-Allow-Origin' => "*",
-                'Access-Control-Allow-Headers' => 'Content-Type, Authorization, X-Requested-With',
+                'Access-Control-Allow-Headers' => 'token, Content-Type, Authorization, X-Requested-With',
                 'Access-Control-Allow-Methods' => '*']);
         }
 
