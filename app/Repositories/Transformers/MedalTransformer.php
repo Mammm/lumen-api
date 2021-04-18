@@ -14,6 +14,8 @@ class MedalTransformer extends TransformerAbstract
         return [
             "id" => $medal->id,
             "name" => $medal->name,
+            "code" => $medal->code,
+            "imageUrl" => $medal->image_url,
         ];
     }
 }
