@@ -36,6 +36,9 @@ class UsersController extends Controller
 
     public function sendRegisterVerifyCode(Request $request)
     {
+        $this->validate($request, [
+            "phone" => ["required"],
+        ]);
         $this->userService->sendRegisterVerifyCode($request);
         return Response::success();
     }
