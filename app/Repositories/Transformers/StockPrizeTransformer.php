@@ -14,8 +14,10 @@ class StockPrizeTransformer extends TransformerAbstract
         return [
             "id" => $stockPrize->id,
             "name" => $stockPrize->prize->name,
+            "imageUrl" => $stockPrize->prize->image_url,
             "type" => $stockPrize->prize->type,
-            "status" => $stockPrize->notify_shipping
+            "status" => $stockPrize->notify_shipping,
+            "gmtCreated" => $stockPrize->gmt_created
         ];
     }
 }
