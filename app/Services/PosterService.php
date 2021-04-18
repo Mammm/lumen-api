@@ -12,7 +12,7 @@ class PosterService
     private string $qrCodeFormat = "png";
 
     private int $qrCodeMargin = 12;
-    private int $qrCodeSize = 172;
+    private int $qrCodeSize = 185;
 
     /**
      * 创建二维码
@@ -42,7 +42,7 @@ class PosterService
         $postPath = new_tmp_file("jpg");
 
         Image::make($backgroundImg)
-            ->insert($qrCodeImg, 'bottom-left', 35, 30)
+            ->insert($qrCodeImg, 'bottom-left', 35, 112)
             ->save($postPath);
 
         return $postPath;
