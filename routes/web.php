@@ -44,7 +44,7 @@ Route::group(['prefix' => 'mystery-boxes'], function () {
         Route::post('/', 'UsersController@store');
         Route::get('/', 'UsersController@show');
         Route::get("poster", 'UsersController@poster');
-        Route::post('verify-code', 'UserController@sendRegisterVerifyCode');
+        Route::post('verify-code', 'UsersController@sendRegisterVerifyCode');
 
         Route::post("prize", "UsersController@getPrize");
         Route::get("prize", "UsersController@prizeList");
