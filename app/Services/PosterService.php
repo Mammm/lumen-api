@@ -19,10 +19,14 @@ class PosterService
      */
     public function makeQrCodeImage(string $content): string
     {
-        return QrCode::format($this->qrCodeFormat)
+        $path = new_tmp_file($this->qrCodeFormat);
+
+        QrCode::format($this->qrCodeFormat)
             ->margin(0)
             ->size($this->qrCodeSize)
-            ->generate($content, new_tmp_file($this->qrCodeFormat));
+            ->generate($content, $path);
+
+        return $path;
     }
 
     /**
