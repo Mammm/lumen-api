@@ -139,8 +139,8 @@ class UserService
         if (count($stockList) != count($cashMedalCodeList)) {
             stop("勋章数量不足兑换奖品");
         }
-        $missInventory = $stockList->filter(function ($key, $value) {
-            return $value->number <= 0;
+        $missInventory = $stockList->filter(function ($item, $key) {
+            return $item->number <= 0;
         })->all();
         if (count($missInventory) > 0) {
             stop("勋章数量不足兑换奖品");
