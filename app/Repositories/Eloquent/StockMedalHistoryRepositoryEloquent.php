@@ -4,6 +4,7 @@ namespace App\Repositories\Eloquent;
 
 use App\Repositories\Enums\ResponseCodeEnum;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Log;
 use Prettus\Repository\Eloquent\BaseRepository;
 use Prettus\Repository\Criteria\RequestCriteria;
 use App\Contracts\Repositories\StockMedalHistoryRepository;
@@ -40,6 +41,7 @@ class StockMedalHistoryRepositoryEloquent extends BaseRepository implements Stoc
         try {
             $this->model->saveOrFail();
         } catch (\Throwable $e) {
+            Log::error($e);
             abort(ResponseCodeEnum::SYSTEM_ERROR, "创建勋章变动流水表失败");
         }
         return $this->model;
