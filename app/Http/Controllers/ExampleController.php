@@ -10,7 +10,10 @@
  */
 
 namespace App\Http\Controllers;
+
+use App\Services\OutApi\AESUtils;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Http;
 use Jiannei\Response\Laravel\Support\Facades\Response;
 
 class ExampleController extends Controller
@@ -26,16 +29,11 @@ class ExampleController extends Controller
 
     public function configurations(Request $request)
     {
-        return Response::success([
-            'app' => config('app'),
-            'auth' => config('auth'),
-            'broadcasting' => config('broadcasting'),
-            'cache' => config('cache'),
-            'database' => config('database'),
-            'filesystems' => config('filesystems'),
-            'logging' => config('logging'),
-            'queue' => config('queue'),
-            'services' => config('services'),
-        ]);
+        $url = "https://passport.fiveplus.com/m/UserProfileQuery.action";
+        $appCode = "AES";
+        $data = AESUtils::encrypt('{"storeId":2,"userLoginPhone":15107691336}');
+        $response = Http::get($url, compact('appCode', 'data'));
+
+        dd($response->json());
     }
 }

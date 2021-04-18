@@ -20,6 +20,8 @@ use App\Contracts\Repositories\WechatAccountRepository;
 use App\Repositories\Enums\ResponseCodeEnum;
 use App\Repositories\Presenters\Top100Presenter;
 use App\Repositories\Presenters\UserPresenter;
+use App\Services\OutApi\DTO\UserRegisterReq;
+use App\Services\OutApi\OutApiService;
 use App\Support\Constant;
 use EasyWeChat\OfficialAccount\Application;
 use Illuminate\Http\Request;
@@ -208,17 +210,32 @@ class UserService
         //用户数据处理
         $user = $this->userRepository->getByTelephoneNumber($request->input("phone"));
         if (!is_null($user)) {
-            $outUser = [];// TODO:查找甲方系统中用户的数据
+            $outUser = OutApiService::queryUser($request->input("phone"));
             if (is_null($outUser)) {
                 try {
-                    $outUser = []; //TODO:甲方系统中没有用户数据，注册
+                    $registerReq = new UserRegisterReq();
+                    $registerReq->setUserLoginPhone($request->input("phone"));
+                    $registerReq->setUserPwd("");
+                    $registerReq->setUserFrom(1);
+                    $registerReq->setRegSource("weixin");
+                    $registerReq->setPhoneAuthCode($request->input("verifyCode"));
+                    $registerReq->setUserNickName($wechatUser["nickname"]);
+                    $registerReq->setUserGender($wechatUser["sex"]);
+                    $registerReq->setShopNumber("test");
+                    $registerReq->setClerkNumber("test");
+                    $registerReq->setBrandId(0);
+                    $registerReq->setOuterUserId($wechatUser["openid"]);
+                    $registerReq->setAuthType("24");
+                    $registerReq->setOuterNickName($wechatUser["nickname"]);
+                    $registerReq->setUnionId($wechatUser["unionid"]);
+                    $outUser = OutApiService::sendRegisterVerifyCode($registerReq);
                 } catch (\Exception $e) {
                     Log::error("远端服务器调用注册接口失败,错误信息{$e->getMessage()}", $e->getTrace());
                     abort(ResponseCodeEnum::SERVICE_REGISTER_ERROR, "注册超时，请稍后重试");
                 }
             }
             $userAttr = [
-                "out_id" => $outUser["id"],
+                "out_id" => $outUser["userId"],
                 "nickname" => $wechatUser["nickname"],
                 "gender" => $wechatUser["sex"],
                 "avatar_url" => $wechatUser["headimgurl"],

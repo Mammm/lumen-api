@@ -1,7 +1,11 @@
 {
     "name": "laravel/lumen",
     "description": "The Laravel Lumen Framework.",
-    "keywords": ["framework", "laravel", "lumen"],
+    "keywords": [
+        "framework",
+        "laravel",
+        "lumen"
+    ],
     "license": "MIT",
     "type": "project",
     "require": {
@@ -19,7 +23,8 @@
         "prettus/l5-repository": "^2.7",
         "simplesoftwareio/simple-qrcode": "~4",
         "tymon/jwt-auth": "^1.0",
-        "ext-mcrypt": "*"
+        "ext-mcrypt": "*",
+        "ext-openssl": "*"
     },
     "require-dev": {
     },
