@@ -9,8 +9,8 @@ use App\Repositories\Criteria\StockPrizeCriteria;
 use App\Repositories\Models\Prize;
 use App\Repositories\Models\User;
 use App\Repositories\Presenters\StockPrizePresenter;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Request;
 use Prettus\Repository\Exceptions\RepositoryException;
 
 class StockPrizeService

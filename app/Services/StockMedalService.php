@@ -13,9 +13,9 @@ use App\Repositories\Models\User;
 use App\Repositories\Presenters\StockMedalPresenter;
 use App\Repositories\Presenters\Top100Presenter;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Http\Request;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Request;
 use Prettus\Repository\Exceptions\RepositoryException;
 
 class StockMedalService
