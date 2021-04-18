@@ -133,7 +133,7 @@ class UserService
                 stop("优惠券奖励{$prize->name}只能领取一次");
             }
         }
-        $cashMedalCodeList = explode(",", $prizeId->exchange_rule);
+        $cashMedalCodeList = explode(",", $prize->exchange_rule);
 
         $stockList = $this->stockMedalService->listCashPrizeMedal($user, $cashMedalCodeList);
         if (count($stockList) != count($cashMedalCodeList)) {
