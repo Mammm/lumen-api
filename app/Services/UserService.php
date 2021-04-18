@@ -91,7 +91,7 @@ class UserService
         $hundred = $this->userRepository->top100();
 
         $user = $this->userRepository->find(Auth::id());
-        $ranking = $this->userRepository->ranking($user);
+        $ranking = $this->userRepository->ranking($user)->count();
 
         $data = [
             "hundred" => $hundred,
