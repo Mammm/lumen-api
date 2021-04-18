@@ -14,7 +14,7 @@ class StockPrizeTransformer extends TransformerAbstract
         return [
             "id" => $stockPrize->id,
             "name" => $stockPrize->prize->name,
-            "type" => $stockPrize->type,
+            "type" => $stockPrize->prize->type,
             "status" => $stockPrize->notify_shipping
         ];
     }
