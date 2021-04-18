@@ -143,7 +143,7 @@ class UserRepositoryEloquent extends BaseRepository implements UserRepository
     {
         $affected = $this->model->newQuery()
             ->where("id", $userId)
-            ->increment("medeal");
+            ->increment("medal");
 
         return $affected > 0;
     }
