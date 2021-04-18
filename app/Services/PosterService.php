@@ -10,7 +10,9 @@ use SimpleSoftwareIO\QrCode\Facades\QrCode;
 class PosterService
 {
     private string $qrCodeFormat = "png";
-    private int $qrCodeSize = 184;
+
+    private int $qrCodeMargin = 12;
+    private int $qrCodeSize = 172;
 
     /**
      * 创建二维码
@@ -22,7 +24,7 @@ class PosterService
         $path = new_tmp_file($this->qrCodeFormat);
 
         QrCode::format($this->qrCodeFormat)
-            ->margin(0)
+            ->margin($this->qrCodeMargin)
             ->size($this->qrCodeSize)
             ->generate($content, $path);
 
