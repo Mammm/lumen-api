@@ -113,7 +113,11 @@ class UserService
         try {
             $this->goldService->adjustGold($user, -self::GAME_GOLD, "游戏消费");
             $medal = $this->medalService->luckDraw();
-            $this->stockMedalService->addStockMedal($user, $medal);
+            $stockMedal = $this->stockMedalRepository->getByUserIdAndMedalId($user->id, $medal->id);
+            if (is_null($stockMedal)) {
+                $stockMedal = $this->stockMedalService->addStockMedal($user, $medal);
+            }
+            $this->stockMedalRepository->incrementStock($stockMedal->id, $stockMedal->version);
             $this->userRepository->incrementMedal($user->id);
         } catch (\Throwable $e) {
             stop("游戏发生错误 - {$e->getMessage()}");
