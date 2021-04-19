@@ -29,11 +29,16 @@ class ExampleController extends Controller
 
     public function configurations(Request $request)
     {
-        $url = "https://passport.fiveplus.com/m/UserProfileQuery.action";
-        $appCode = "AES";
-        $data = AESUtils::encrypt('{"storeId":2,"userLoginPhone":15107691336}');
-        $response = Http::get($url, compact('appCode', 'data'));
-
-        dd($response->json());
+        return Response::success([
+            'app' => config('app'),
+            'auth' => config('auth'),
+            'broadcasting' => config('broadcasting'),
+            'cache' => config('cache'),
+            'database' => config('database'),
+            'filesystems' => config('filesystems'),
+            'logging' => config('logging'),
+            'queue' => config('queue'),
+            'services' => config('services'),
+        ]);
     }
 }
