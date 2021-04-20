@@ -12,9 +12,19 @@
 namespace App\Http\Controllers;
 
 use App\Services\OutApi\AESUtils;
+use App\Services\OutApi\API;
+use App\Services\OutApi\DTO\UserRegisterReq;
+use App\Services\OutApi\OutApiService;
+use App\Support\Aliyun\ApiGateway\Constant\ContentType;
+use App\Support\Aliyun\ApiGateway\Constant\HttpHeader;
+use App\Support\Aliyun\ApiGateway\Constant\HttpMethod;
+use App\Support\Aliyun\ApiGateway\Constant\SystemHeader;
+use App\Support\Aliyun\ApiGateway\Http\HttpClient;
+use App\Support\Aliyun\ApiGateway\Http\HttpRequest;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Http;
 use Jiannei\Response\Laravel\Support\Facades\Response;
+use SimpleSoftwareIO\QrCode\Facades\QrCode;
 
 class ExampleController extends Controller
 {
@@ -29,16 +39,7 @@ class ExampleController extends Controller
 
     public function configurations(Request $request)
     {
-        return Response::success([
-            'app' => config('app'),
-            'auth' => config('auth'),
-            'broadcasting' => config('broadcasting'),
-            'cache' => config('cache'),
-            'database' => config('database'),
-            'filesystems' => config('filesystems'),
-            'logging' => config('logging'),
-            'queue' => config('queue'),
-            'services' => config('services'),
-        ]);
+        echo QrCode::size(100)
+            ->generate("test");
     }
 }
