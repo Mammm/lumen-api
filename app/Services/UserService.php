@@ -231,13 +231,13 @@ class UserService
 
         try {
             $registerReq = new UserRegisterReq();
-            $registerReq->setUserLoginPhone($request->input("phone"));
-            $registerReq->setPhoneAuthCode($request->input("verifyCode"));
-            $registerReq->setUserNickName($wechatAccount["nickname"]);
-            $registerReq->setUserGender($wechatAccount["gender"]);
-            $registerReq->setOuterUserId($wechatAccount["open_id"]);
-            $registerReq->setOuterNickName($wechatAccount["nickname"]);
-            $registerReq->setUnionId($wechatAccount["union_id"]);
+            $registerReq->userLoginPhone =  $request->input("phone");
+            $registerReq->phoneAuthCode = $request->input("verifyCode");
+            $registerReq->userNickName = $wechatAccount["nickname"];
+            $registerReq->userGender = $wechatAccount["gender"];
+            $registerReq->outerUserId = $wechatAccount["open_id"];
+            $registerReq->outerNickName = $wechatAccount["nickname"];
+            $registerReq->unionId = $wechatAccount["union_id"];
             $data = OutApiService::sendRegisterVerifyCode($registerReq);
         } catch (\Exception $e) {
             Log::error("远端服务器调用注册接口失败,错误信息{$e->getMessage()}", $e->getTrace());
