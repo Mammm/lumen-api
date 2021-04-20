@@ -9,6 +9,8 @@ use App\Repositories\Criteria\StockPrizeCriteria;
 use App\Repositories\Models\Prize;
 use App\Repositories\Models\User;
 use App\Repositories\Presenters\StockPrizePresenter;
+use App\Services\OutApi\DTO\UserRegisterReq;
+use App\Services\OutApi\OutApiService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Prettus\Repository\Exceptions\RepositoryException;
@@ -64,9 +66,11 @@ class StockPrizeService
         try {
             $result = $this->stockPrizeRepository->receiveCoupon($stockPrize->id);
             if (!$result) {
-                stop("");
+                stop();
             }
-            //TODO:调用远端接口领取优惠券
+
+            $req = new UserRegisterReq();
+            OutApiService::userGetCoupon($req);
         } catch (\Throwable $e) {
             stop("领取优惠券奖励失败，请稍后重试 - {$e->getMessage()}");
         }
