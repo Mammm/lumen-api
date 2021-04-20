@@ -12,6 +12,8 @@ use Jiannei\Response\Laravel\Support\Facades\Response;
 
 class WechatController extends Controller
 {
+    const JS_SDK_URL = "http://xingyu.fiveplus.com/#/";
+
     private OfficialAccountService $service;
     private WechatAccountService $account;
 
@@ -30,6 +32,13 @@ class WechatController extends Controller
             return "欢迎关注公众号";
         });
         return $officialAccount->server->server();
+    }
+
+    public function getJsSDKConfig()
+    {
+        $this->service->access_token->setToken(OutApiService::accessToken());
+        $config = $this->service->jssdk->getConfigArray([], false, false, [], self::JS_SDK_URL);
+        return Response::success($config);
     }
 
     public function userFromCode(Request $request)

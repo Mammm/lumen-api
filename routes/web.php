@@ -39,6 +39,7 @@ Route::group(['prefix' => 'test'], function () {
 Route::group(['prefix' => 'mystery-boxes'], function () {
 
     Route::get("wechat/code-to-openid", "WechatController@userFromCode");
+    Route::get("wechat/jssdk-config", "WechatController@getJsSDKConfig");
 
     Route::get("rank", "UsersController@rank");
     Route::post("game", "UsersController@gameStart");
