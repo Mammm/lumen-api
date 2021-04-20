@@ -184,13 +184,18 @@ class UserService
 
     private function newUserPoster(int $id): array
     {
-        $url = self::USER_INVITE_URL . "?inviteBy={$id}";
-        $qrCodePath = $this->posterService->makeQrCodeImage($url);
+        try {
+            $url = self::USER_INVITE_URL . "?inviteBy={$id}";
+            $qrCodePath = $this->posterService->makeQrCodeImage($url);
 
-        $poster = [];
-        foreach ($this->posterBackgroundImgs as $posterBackgroundImg) {
-            $posterPath = $this->posterService->makePosterImage($posterBackgroundImg, $qrCodePath);
-            $poster[] = storage_url($posterPath);
+            $poster = [];
+            foreach ($this->posterBackgroundImgs as $posterBackgroundImg) {
+                $posterPath = $this->posterService->makePosterImage($posterBackgroundImg, $qrCodePath);
+                $poster[] = storage_url($posterPath);
+            }
+        } catch (\Throwable $e) {
+            Log::error($e);
+            stop("创建海报图片报错 - {$e->getMessage()}");
         }
 
         return $poster;
