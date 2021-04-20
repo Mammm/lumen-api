@@ -20,4 +20,9 @@ class API
      * 用户注册接口
      */
     const USER_REG_ADD_NEW = "/m/UserRegAddNew.action";
+
+    /**
+     * 微信access_token接口
+     */
+    const ACCESS_TOKEN = "https://act.fiveplus.com/m/getToken.action";
 }

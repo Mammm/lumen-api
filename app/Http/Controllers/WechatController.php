@@ -3,10 +3,12 @@
 
 namespace App\Http\Controllers;
 
+use App\Services\OutApi\OutApiService;
 use App\Services\WechatAccountService;
 use EasyWeChat\OfficialAccount\Application as OfficialAccountService;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Request;
+use Jiannei\Response\Laravel\Support\Facades\Response;
 
 class WechatController extends Controller
 {
@@ -16,6 +18,7 @@ class WechatController extends Controller
     public function __construct(OfficialAccountService $service,
                                 WechatAccountService $account)
     {
+        $this->service = $service;
         $this->account = $account;
     }
 
@@ -29,8 +32,15 @@ class WechatController extends Controller
         return $officialAccount->server->server();
     }
 
-    public function test(Request $request)
+    public function userFromCode(Request $request)
     {
-        $this->service->oauth->userFromCode($request->input("code"));
+        $token = $this->service->oauth->tokenFromCode($request->input("code"));
+        if ($account = $this->account->getByOpenId($token["openid"])) {
+            return Response::success(["openid" => $token["openid"]]);
+        }
+        //未写入
+        $user = $this->service->oauth->userFromToken($token["access_token"]);
+        $this->account->addAccount($user);
+        return Response::success(["openid" => $token["openid"]]);
     }
 }

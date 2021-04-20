@@ -26,6 +26,16 @@ class WechatAccountRepositoryEloquent extends BaseRepository implements WechatAc
     }
 
     /**
+     * 通过userId获取
+     * @param int $userId
+     * @return WechatAccount|null
+     */
+    public function getByUserId(int $userId): ?WechatAccount
+    {
+        return $this->model->newQuery()->where("user_id", $userId)->first();
+    }
+
+    /**
      * 通过openId查找账户
      * @param $openId
      * @return Model|null
@@ -79,5 +89,15 @@ class WechatAccountRepositoryEloquent extends BaseRepository implements WechatAc
             abort(ResponseCodeEnum::SERVICE_REGISTER_ERROR);
         }
         return $this->model;
+    }
+
+    public function updateUserId(int $id, int $userId): bool
+    {
+        $updateLine = $this->model->newQuery()
+            ->where("id", $id)
+            ->where("user_id", 0)
+            ->update(["user_id" => $userId]);
+
+        return $updateLine > 0;
     }
 }

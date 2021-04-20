@@ -17,6 +17,13 @@ interface WechatAccountRepository extends RepositoryInterface, RepositoryCriteri
 {
 
     /**
+     * 通过userId获取
+     * @param int $userId
+     * @return WechatAccount|null
+     */
+    function getByUserId(int $userId): ?WechatAccount;
+
+    /**
      * 通过openId查找账户
      * @param $openId
      * @return Model|null
@@ -37,4 +44,12 @@ interface WechatAccountRepository extends RepositoryInterface, RepositoryCriteri
      * @return Model
      */
     function insertAccount(array $attr, string $operator): Model;
+
+    /**
+     * 更新微信账号userId
+     * @param int $id
+     * @param int $userId
+     * @return bool
+     */
+    function updateUserId(int $id, int $userId): bool;
 }

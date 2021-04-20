@@ -204,79 +204,65 @@ class UserService
     public function register(Request $request): void
     {
         //获取微信用户信息
-        $wechatUser = null;
-        try {
-            $wechatUser = $this->officialAccountApp->user->get($request->input("openid"));
-        } catch (\Exception $e) {
-            abort(ResponseCodeEnum::SERVICE_REGISTER_ERROR, "获取用户信息失败");
+        $wechatAccount = $this->wechatAccountRepository->getByOpenId($request->input("openid"));
+        if (is_null($wechatAccount)) {
+            stop("获取用户微信数据失败，请刷新重试");
+        }
+        if ($wechatAccount["user_id"] > 0) {
+            $user = $this->userRepository->find($wechatAccount["user_id"]);
+            if ($user["mobile_phone"] != $request->input("phone")) {
+                stop("用户已绑定手机号{$user['mobile_phone']}");
+            }
         }
 
         //用户数据处理
-        $user = $this->userRepository->getByTelephoneNumber($request->input("phone"));
-        if (!is_null($user)) {
-            $outUser = OutApiService::queryUser($request->input("phone"));
-            if (is_null($outUser)) {
-                try {
-                    $registerReq = new UserRegisterReq();
-                    $registerReq->setUserLoginPhone($request->input("phone"));
-                    $registerReq->setUserPwd("");
-                    $registerReq->setUserFrom(1);
-                    $registerReq->setRegSource("weixin");
-                    $registerReq->setPhoneAuthCode($request->input("verifyCode"));
-                    $registerReq->setUserNickName($wechatUser["nickname"]);
-                    $registerReq->setUserGender($wechatUser["sex"]);
-                    $registerReq->setShopNumber("test");
-                    $registerReq->setClerkNumber("test");
-                    $registerReq->setBrandId(0);
-                    $registerReq->setOuterUserId($wechatUser["openid"]);
-                    $registerReq->setAuthType("24");
-                    $registerReq->setOuterNickName($wechatUser["nickname"]);
-                    $registerReq->setUnionId($wechatUser["unionid"]);
-                    $outUser = OutApiService::sendRegisterVerifyCode($registerReq);
-                } catch (\Exception $e) {
-                    Log::error("远端服务器调用注册接口失败,错误信息{$e->getMessage()}", $e->getTrace());
-                    abort(ResponseCodeEnum::SERVICE_REGISTER_ERROR, "注册超时，请稍后重试");
+        $userOrNull = $this->userRepository->getByTelephoneNumber($request->input("phone"));
+        if (!is_null($userOrNull)) {
+            $wechatAccountOrNull = $this->wechatAccountRepository->getByUserId($userOrNull["id"]);
+            if (is_null($wechatAccountOrNull)) {
+                $result = $this->wechatAccountRepository->updateUserId($wechatAccount["id"], $userOrNull["id"]);
+                if (!$result) {
+                    stop("微信绑定手机号失败，请稍后重试");
                 }
+            } else {
+                stop("手机已经绑定账户{$wechatAccountOrNull["nickname"]}");
             }
-            $userAttr = [
-                "out_id" => $outUser["userId"],
-                "nickname" => $wechatUser["nickname"],
-                "gender" => $wechatUser["sex"],
-                "avatar_url" => $wechatUser["headimgurl"],
-                "mobile_phone" => $outUser["mobile_phone"],
-                "referrer" => $request->input("inviteBy", 0)
-            ];
-            $user = $this->userRepository->insertUser($userAttr, Constant::OPERATOR);
         }
 
-        //微信账号数据处理
-        $wechatAccount = $this->wechatAccountRepository->getByOpenId($request->input("openid"));
-        if (!is_null($wechatAccount)) {
-            if ($wechatAccount["user_id"] != $user["id"]) {
-                abort(ResponseCodeEnum::SERVICE_REGISTER_ERROR, "手机账号已被{$wechatAccount["nickname"]}绑定");
-            }
-            return;
+        try {
+            $registerReq = new UserRegisterReq();
+            $registerReq->setUserLoginPhone($request->input("phone"));
+            $registerReq->setPhoneAuthCode($request->input("verifyCode"));
+            $registerReq->setUserNickName($wechatAccount["nickname"]);
+            $registerReq->setUserGender($wechatAccount["gender"]);
+            $registerReq->setOuterUserId($wechatAccount["open_id"]);
+            $registerReq->setOuterNickName($wechatAccount["nickname"]);
+            $registerReq->setUnionId($wechatAccount["union_id"]);
+            $data = OutApiService::sendRegisterVerifyCode($registerReq);
+        } catch (\Exception $e) {
+            Log::error("远端服务器调用注册接口失败,错误信息{$e->getMessage()}", $e->getTrace());
+            abort(ResponseCodeEnum::SERVICE_REGISTER_ERROR, "注册超时，请稍后重试");
         }
-        $wechatAccountAttr = [
-            "user_id" => $user["id"],
-            "app_type" => "officialAccount",
-            "open_id" => $wechatUser["openid"],
-            "app_id" => $this->officialAccountApp->config->get("app_id"),
-            "union_id" => $wechatUser["unionid"] ?? "",
-            "nickname" => $wechatUser["nickname"],
-            "avatar_url" => $wechatUser["headimgurl"],
-            "gender" => $wechatUser["sex"],
-            "city" => $wechatUser["city"],
-            "province" => $wechatUser["province"],
-            "country" => $wechatUser["country"],
-            "subscribe_time" => $wechatUser["subscribe_time"],
-            "subscribe_scene" => $wechatUser["subscribe_scene"],
+
+        $userAttr = [
+            "out_id" => $data["userId"],
+            "nickname" => $wechatAccount["nickname"],
+            "gender" => $wechatAccount["sex"],
+            "avatar_url" => $wechatAccount["headimgurl"],
+            "mobile_phone" => $request->input("phone"),
+            "referrer" => $request->input("inviteBy", 0)
         ];
-        $newAccount = $this->wechatAccountRepository->insertAccount($wechatAccountAttr, Constant::OPERATOR);
+        $user = $this->userRepository->insertUser($userAttr, Constant::OPERATOR);
+
+        //微信账号数据处理
+        $result = $this->wechatAccountRepository->updateUserId($wechatAccount["id"], $user["id"]);
+        if (!$result) {
+            stop("微信绑定手机号失败，请稍后重试");
+        }
 
         if ($request->has("inviteBy")) {
             $inviteUser = $this->userRepository->find($request->input("inviteBy"));
-            $this->goldService->adjustGold($inviteUser, self::INVITE_GOLD, "邀请{$newAccount->nickname}注册奖励");
+            $this->goldService->adjustGold($inviteUser, self::INVITE_GOLD, "邀请{$wechatAccount->nickname}注册奖励");
         }
     }
 }

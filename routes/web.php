@@ -34,8 +34,12 @@ Route::group(['prefix' => 'test'], function () {
     Route::get('configurations', 'ExampleController@configurations');
 });
 
+
 // 用户管理
 Route::group(['prefix' => 'mystery-boxes'], function () {
+
+    Route::get("wechat/userFromCode", "WechatController@userFromCode");
+
     Route::get("rank", "UsersController@rank");
     Route::post("game", "UsersController@gameStart");
     Route::get("prize", "PrizeController@all");

@@ -8,8 +8,10 @@ use App\Contracts\Repositories\WechatAccountRepository;
 use App\Repositories\Eloquent\UserRepositoryEloquent;
 use App\Repositories\Eloquent\WechatAccountRepositoryEloquent;
 use App\Repositories\Enums\ResponseCodeEnum;
+use App\Repositories\Models\Account\WechatAccount;
 use App\Repositories\Models\User;
 use App\Services\Contract\AccountService;
+use App\Support\Constant;
 use EasyWeChat\OfficialAccount\Application;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
@@ -33,6 +35,34 @@ class WechatAccountService implements AccountService
         $this->officialAccountApp = $officialAccountApp;
         $this->accountRepository = $accountRepository;
         $this->userRepository = $userRepository;
+    }
+
+    public function addAccount(\Overtrue\Socialite\User $wechatUser)
+    {
+        $wechatUserRaw = $wechatUser->getRaw();
+
+        $wechatAccountAttr = [
+            "user_id" => 0,
+            "app_type" => "officialAccount",
+            "open_id" => $wechatUser->getId(),
+            "app_id" => $this->officialAccountApp->config->get("app_id"),
+            "union_id" => $wechatUserRaw["unionid"],
+            "nickname" => $wechatUser->getNickname(),
+            "avatar_url" => $wechatUser->getAvatar(),
+            "gender" => $wechatUserRaw["sex"],
+            "city" => $wechatUserRaw["city"],
+            "province" => $wechatUserRaw["province"],
+            "country" => $wechatUserRaw["country"],
+            "subscribe_time" => 0,
+            "subscribe_scene" => ""
+        ];
+
+        $this->accountRepository->insertAccount($wechatAccountAttr, Constant::OPERATOR);
+    }
+
+    public function getByOpenId(string $openid): ?WechatAccount
+    {
+        return $this->accountRepository->getByOpenId($openid);
     }
 
     public function loginOrRegister(array $credentials): ?User

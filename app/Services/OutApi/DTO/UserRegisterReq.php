@@ -4,17 +4,24 @@
 namespace App\Services\OutApi\DTO;
 
 
+use App\Services\OutApi\OutApiService;
+
 class UserRegisterReq
 {
+    const DEFAULT_PASSWORD = "123456";
+    const FROM_ONLINE = 1;
+    const SOURCE_WEIXIN = "weixin";
+    const AUTH_WEIXIN = 24;
+
     private string $userLoginPhone;
 
-    private string $userPwd;
+    private string $userPwd = self::DEFAULT_PASSWORD;
 
-    private int $userFrom;
+    private int $userFrom = self::FROM_ONLINE;
 
-    private string $regSource;
+    private string $regSource = self::SOURCE_WEIXIN;
 
-    private int $storeId;
+    private int $storeId = OutApiService::STORE_ID;
 
     private string $phoneAuthCode;
 
@@ -22,16 +29,10 @@ class UserRegisterReq
 
     private int $userGender;
 
-    private string $shopNumber;
-
-    private string $clerkNumber;
-
-    private int $brandId;
-
     //openid
     private string $outerUserId;
 
-    private string $authType;
+    private int $authType = self::AUTH_WEIXIN;
 
     private string $outerNickName;
 
@@ -51,70 +52,6 @@ class UserRegisterReq
     public function setUserLoginPhone(string $userLoginPhone): void
     {
         $this->userLoginPhone = $userLoginPhone;
-    }
-
-    /**
-     * @return string
-     */
-    public function getUserPwd(): string
-    {
-        return $this->userPwd;
-    }
-
-    /**
-     * @param string $userPwd
-     */
-    public function setUserPwd(string $userPwd): void
-    {
-        $this->userPwd = $userPwd;
-    }
-
-    /**
-     * @return int
-     */
-    public function getUserFrom(): int
-    {
-        return $this->userFrom;
-    }
-
-    /**
-     * @param int $userFrom
-     */
-    public function setUserFrom(int $userFrom): void
-    {
-        $this->userFrom = $userFrom;
-    }
-
-    /**
-     * @return string
-     */
-    public function getRegSource(): string
-    {
-        return $this->regSource;
-    }
-
-    /**
-     * @param string $regSource
-     */
-    public function setRegSource(string $regSource): void
-    {
-        $this->regSource = $regSource;
-    }
-
-    /**
-     * @return int
-     */
-    public function getStoreId(): int
-    {
-        return $this->storeId;
-    }
-
-    /**
-     * @param int $storeId
-     */
-    public function setStoreId(int $storeId): void
-    {
-        $this->storeId = $storeId;
     }
 
     /**
@@ -168,54 +105,6 @@ class UserRegisterReq
     /**
      * @return string
      */
-    public function getShopNumber(): string
-    {
-        return $this->shopNumber;
-    }
-
-    /**
-     * @param string $shopNumber
-     */
-    public function setShopNumber(string $shopNumber): void
-    {
-        $this->shopNumber = $shopNumber;
-    }
-
-    /**
-     * @return string
-     */
-    public function getClerkNumber(): string
-    {
-        return $this->clerkNumber;
-    }
-
-    /**
-     * @param string $clerkNumber
-     */
-    public function setClerkNumber(string $clerkNumber): void
-    {
-        $this->clerkNumber = $clerkNumber;
-    }
-
-    /**
-     * @return int
-     */
-    public function getBrandId(): int
-    {
-        return $this->brandId;
-    }
-
-    /**
-     * @param int $brandId
-     */
-    public function setBrandId(int $brandId): void
-    {
-        $this->brandId = $brandId;
-    }
-
-    /**
-     * @return string
-     */
     public function getOuterUserId(): string
     {
         return $this->outerUserId;
@@ -227,22 +116,6 @@ class UserRegisterReq
     public function setOuterUserId(string $outerUserId): void
     {
         $this->outerUserId = $outerUserId;
-    }
-
-    /**
-     * @return string
-     */
-    public function getAuthType(): string
-    {
-        return $this->authType;
-    }
-
-    /**
-     * @param string $authType
-     */
-    public function setAuthType(string $authType): void
-    {
-        $this->authType = $authType;
     }
 
     /**
@@ -277,5 +150,8 @@ class UserRegisterReq
         $this->unionId = $unionId;
     }
 
-
+    public function __toString()
+    {
+        return json_encode($this);
+    }
 }
