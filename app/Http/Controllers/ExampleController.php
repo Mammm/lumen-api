@@ -39,7 +39,8 @@ class ExampleController extends Controller
 
     public function configurations(Request $request)
     {
-        echo QrCode::size(100)
+        return QrCode::format("png")
+            ->size(100)
             ->generate("test");
     }
 }
